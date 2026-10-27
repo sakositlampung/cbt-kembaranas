@@ -446,14 +446,13 @@
         </div>
       </div>
 
-      <!-- TAB SETTING UJIAN (LENGKAP DENGAN CUSTOM WARNA TEMA) -->
+      <!-- TAB SETTING UJIAN -->
       <div id="tabGuruSetting" class="d-none">
         <div class="card card-cbt p-3 p-md-4">
           <h5 class="fw-bold text-primary mb-4"><i class="bi bi-sliders me-2"></i>Pengaturan Aturan Ujian & Tampilan</h5>
           
           <form id="formSettingUjian" onsubmit="simpanSettingUjian(event)">
             
-            <!-- CUSTOM TEMA WARNA APLIKASI -->
             <div class="setting-card">
               <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
                 <div>
@@ -466,7 +465,6 @@
               </div>
             </div>
 
-            <!-- 1. Durasi Waktu Ujian -->
             <div class="setting-card">
               <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
                 <div>
@@ -480,7 +478,6 @@
               </div>
             </div>
 
-            <!-- 2. Tampilkan Info Hasil & Rilis Nilai Langsung -->
             <div class="setting-card">
               <div class="form-check form-switch d-flex justify-content-between align-items-center ps-0">
                 <div>
@@ -493,7 +490,6 @@
               </div>
             </div>
 
-            <!-- 3. Acak Urutan Soal -->
             <div class="setting-card">
               <div class="form-check form-switch d-flex justify-content-between align-items-center ps-0">
                 <div>
@@ -506,7 +502,6 @@
               </div>
             </div>
 
-            <!-- 4. Acak Pilihan Jawaban -->
             <div class="setting-card">
               <div class="form-check form-switch d-flex justify-content-between align-items-center ps-0">
                 <div>
@@ -519,7 +514,6 @@
               </div>
             </div>
 
-            <!-- 5. Batasi 1 Kali Mengerjakan -->
             <div class="setting-card">
               <div class="form-check form-switch d-flex justify-content-between align-items-center ps-0">
                 <div>
@@ -532,7 +526,6 @@
               </div>
             </div>
 
-            <!-- 6. Toleransi Pelanggaran Tab -->
             <div class="setting-card">
               <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
                 <div>
@@ -590,7 +583,7 @@
         </div>
       </div>
 
-      <!-- TAB KELOLA BANK SOAL (DENGAN TOMBOL PREVIEW, EDIT, HAPUS, NONAKTIFKAN) -->
+      <!-- TAB KELOLA BANK SOAL -->
       <div id="tabGuruBankSoal" class="d-none">
         <div class="card card-cbt p-3 p-md-4 mb-4">
           <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
@@ -644,13 +637,117 @@
           </div>
         </div>
 
-        <!-- DAFTAR SOAL DENGAN TOMBOL NONAKTIFKAN, PREVIEW, EDIT, HAPUS -->
+        <!-- DAFTAR SOAL -->
         <div id="listSoalGuruContainer"></div>
       </div>
 
     </div>
   </div>
 
+</div>
+
+<!-- MODAL EDIT SOAL POP-UP (PERSIS SESUAI GAMBAR D3553C) -->
+<div class="modal fade" id="modalEditSoal" tabindex="-1">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content border-0 shadow">
+      <div class="modal-header text-white" style="background:var(--primary-color)">
+        <h6 class="modal-title fw-bold text-white" id="titleModalEditSoal">Edit Soal No. 1</h6>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body p-4">
+        <form id="formEditSoalModal" onsubmit="simpanPerubahanEditSoal(event)">
+          <input type="hidden" id="editSoalIndex">
+
+          <!-- Teks Pertanyaan / Soal -->
+          <div class="mb-3">
+            <label class="form-label fw-bold small">Teks Pertanyaan / Soal</label>
+            <textarea id="editTeksSoal" class="form-control" rows="4" required></textarea>
+          </div>
+
+          <!-- Gambar Soal Stimulus -->
+          <div class="mb-4">
+            <label class="form-label fw-bold small">Gambar Soal Stimulus</label>
+            <input type="file" id="editImgSoalFile" class="form-control" accept="image/*" onchange="previewUploadGambarSoal(this)">
+            <div id="previewEditImgSoalBox" class="mt-2 d-none">
+              <img id="imgEditSoalPreview" src="" class="img-fluid rounded border" style="max-height: 150px;">
+              <button type="button" class="btn btn-sm btn-outline-danger ms-2" onclick="hapusGambarSoalEdit()">Hapus Gambar</button>
+            </div>
+          </div>
+
+          <h6 class="fw-bold text-primary border-bottom pb-2 mb-3">Pilihan Jawaban, Kunci & Upload Gambar Opsi</h6>
+
+          <!-- OPSI A -->
+          <div class="card p-3 mb-3 bg-light border">
+            <div class="d-flex align-items-center gap-2 mb-2">
+              <input type="radio" name="radioKunciModal" id="kunciOptA" value="0" class="form-check-input">
+              <label for="kunciOptA" class="fw-bold mb-0 me-2">A</label>
+              <input type="text" id="editOpsiA" class="form-control" required placeholder="Teks Opsi A">
+            </div>
+            <div class="ms-4">
+              <small class="text-muted d-block mb-1">Ganti/Upload Gambar Opsi A:</small>
+              <input type="file" id="fileOptA" class="form-control form-control-sm" accept="image/*" onchange="previewUploadOpsiImg(this, 'previewOptA')">
+              <div id="previewOptABox" class="mt-1 d-none">
+                <img id="previewOptA" src="" class="rounded border" style="max-height: 70px;">
+              </div>
+            </div>
+          </div>
+
+          <!-- OPSI B -->
+          <div class="card p-3 mb-3 bg-light border">
+            <div class="d-flex align-items-center gap-2 mb-2">
+              <input type="radio" name="radioKunciModal" id="kunciOptB" value="1" class="form-check-input">
+              <label for="kunciOptB" class="fw-bold mb-0 me-2">B</label>
+              <input type="text" id="editOpsiB" class="form-control" required placeholder="Teks Opsi B">
+            </div>
+            <div class="ms-4">
+              <small class="text-muted d-block mb-1">Ganti/Upload Gambar Opsi B:</small>
+              <input type="file" id="fileOptB" class="form-control form-control-sm" accept="image/*" onchange="previewUploadOpsiImg(this, 'previewOptB')">
+              <div id="previewOptBBox" class="mt-1 d-none">
+                <img id="previewOptB" src="" class="rounded border" style="max-height: 70px;">
+              </div>
+            </div>
+          </div>
+
+          <!-- OPSI C -->
+          <div class="card p-3 mb-3 bg-light border">
+            <div class="d-flex align-items-center gap-2 mb-2">
+              <input type="radio" name="radioKunciModal" id="kunciOptC" value="2" class="form-check-input">
+              <label for="kunciOptC" class="fw-bold mb-0 me-2">C</label>
+              <input type="text" id="editOpsiC" class="form-control" required placeholder="Teks Opsi C">
+            </div>
+            <div class="ms-4">
+              <small class="text-muted d-block mb-1">Ganti/Upload Gambar Opsi C:</small>
+              <input type="file" id="fileOptC" class="form-control form-control-sm" accept="image/*" onchange="previewUploadOpsiImg(this, 'previewOptC')">
+              <div id="previewOptCBox" class="mt-1 d-none">
+                <img id="previewOptC" src="" class="rounded border" style="max-height: 70px;">
+              </div>
+            </div>
+          </div>
+
+          <!-- OPSI D -->
+          <div class="card p-3 mb-3 bg-light border">
+            <div class="d-flex align-items-center gap-2 mb-2">
+              <input type="radio" name="radioKunciModal" id="kunciOptD" value="3" class="form-check-input">
+              <label for="kunciOptD" class="fw-bold mb-0 me-2">D</label>
+              <input type="text" id="editOpsiD" class="form-control" required placeholder="Teks Opsi D">
+            </div>
+            <div class="ms-4">
+              <small class="text-muted d-block mb-1">Ganti/Upload Gambar Opsi D:</small>
+              <input type="file" id="fileOptD" class="form-control form-control-sm" accept="image/*" onchange="previewUploadOpsiImg(this, 'previewOptD')">
+              <div id="previewOptDBox" class="mt-1 d-none">
+                <img id="previewOptD" src="" class="rounded border" style="max-height: 70px;">
+              </div>
+            </div>
+          </div>
+
+          <div class="d-flex justify-content-end gap-2 mt-4">
+            <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">Batal</button>
+            <button type="submit" class="btn btn-primary fw-bold" style="background:var(--primary-color)">Simpan Perubahan</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- MODAL LOGIN GURU -->
@@ -727,20 +824,25 @@
     { soal: "Tujuan utama Pendidikan dan Pelatihan Instruktur Muda (PPIM) adalah menyiapakan peserta agar mampu...", pilihan: ["Menggantikan seluruh tugas pembina pramuka", "Mengembangkan diri sebagai instruktur muda di gugus depan", "Mengelola seluruh administrasi kwartir", "Menjadi pemimpin semua kegiatan kepramukaan"], kunci: 1, isAktif: true }
   ];
 
+  let activeExamSoal = []; // FILTER SOAL AKTIF UNTUK SISWA
   let jawabanSiswa = [];
   let currentIndex = 0;
   let sisaWaktu = 60 * 60;
   let timerInterval;
-  let modalLoginObj, modalImportWordObj;
+  let modalLoginObj, modalImportWordObj, modalEditSoalObj;
   let isUjianAktif = false;
   let jumlahPelanggaran = 0;
   let parsedWordSoal = [];
+
+  let tempEditImgSoal = null;
+  let tempEditImgOpt = [null, null, null, null];
 
   let globalConfig = { durasi: 60, acakSoal: true, acakJawaban: false, tampilHasil: true, batasiSatu: false, toleransiTab: 3, themeColor: "#4338ca" };
 
   document.addEventListener("DOMContentLoaded", function() {
     modalLoginObj = new bootstrap.Modal(document.getElementById('modalLogin'));
     modalImportWordObj = new bootstrap.Modal(document.getElementById('modalImportWord'));
+    modalEditSoalObj = new bootstrap.Modal(document.getElementById('modalEditSoal'));
 
     // BACA BANK SOAL DARI FIREBASE
     db.ref('bank_soal').on('value', (snapshot) => {
@@ -749,7 +851,7 @@
       renderBankSoalGuru();
     });
 
-    // BACA SETTING DARI FIREBASE (TERMASUK WARNA TEMA)
+    // BACA SETTING DARI FIREBASE
     db.ref('config_ujian').on('value', (snapshot) => {
       let cfg = snapshot.val();
       if(cfg) {
@@ -860,9 +962,22 @@
 
   function mulaiUjian(e) {
     e.preventDefault();
+
+    // AMBIL HANYA SOAL YANG BERSTATUS AKTIF
+    activeExamSoal = bankSoal.filter(s => s.isAktif !== false);
+
+    if (activeExamSoal.length === 0) {
+      Swal.fire({ icon: 'warning', title: 'Ujian Belum Siap', text: 'Belum ada soal aktif yang tersedia untuk dikerjakan.' });
+      return;
+    }
+
+    if (globalConfig.acakSoal) {
+      activeExamSoal.sort(() => Math.random() - 0.5);
+    }
+
     isUjianAktif = true;
     document.body.classList.add('exam-mode-active');
-    jawabanSiswa = new Array(bankSoal.length).fill(null);
+    jawabanSiswa = new Array(activeExamSoal.length).fill(null);
 
     let elem = document.documentElement;
     if (elem.requestFullscreen) elem.requestFullscreen().catch(()=>{});
@@ -880,28 +995,32 @@
   function tampilkanSoal(idx) {
     currentIndex = idx;
     document.getElementById('noSoalTitle').innerText = idx + 1;
-    document.getElementById('soalContainer').innerText = bankSoal[idx].soal;
+    document.getElementById('soalContainer').innerText = activeExamSoal[idx].soal;
 
     const imgContainer = document.getElementById('soalImgContainer');
     const soalImg = document.getElementById('soalImg');
-    if (bankSoal[idx].imageBase64) {
-      soalImg.src = bankSoal[idx].imageBase64;
+    if (activeExamSoal[idx].imageBase64) {
+      soalImg.src = activeExamSoal[idx].imageBase64;
       imgContainer.classList.remove('d-none');
     } else {
       imgContainer.classList.add('d-none');
     }
 
     let html = '';
-    bankSoal[idx].pilihan.forEach((p, pIdx) => {
+    activeExamSoal[idx].pilihan.forEach((p, pIdx) => {
       let sel = jawabanSiswa[idx] === pIdx ? 'selected' : '';
+      let imgOpt = (activeExamSoal[idx].pilihanImg && activeExamSoal[idx].pilihanImg[pIdx])
+        ? `<div class="mt-1"><img src="${activeExamSoal[idx].pilihanImg[pIdx]}" class="rounded border" style="max-height:80px"></div>` : '';
+      
       html += `<div class="option-card ${sel}" onclick="pilihJawaban(${pIdx})">
         <strong>${String.fromCharCode(65 + pIdx)}.</strong> ${p}
+        ${imgOpt}
       </div>`;
     });
     document.getElementById('pilihanContainer').innerHTML = html;
 
     document.getElementById('btnPrev').disabled = (idx === 0);
-    document.getElementById('btnNext').disabled = (idx === bankSoal.length - 1);
+    document.getElementById('btnNext').disabled = (idx === activeExamSoal.length - 1);
     updateNavigasiUI();
   }
 
@@ -910,19 +1029,19 @@
     tampilkanSoal(currentIndex);
   }
 
-  function nextSoal() { if (currentIndex < bankSoal.length - 1) tampilkanSoal(currentIndex + 1); }
+  function nextSoal() { if (currentIndex < activeExamSoal.length - 1) tampilkanSoal(currentIndex + 1); }
   function prevSoal() { if (currentIndex > 0) tampilkanSoal(currentIndex - 1); }
 
   function renderNavigasi() {
     let html = '';
-    bankSoal.forEach((_, idx) => {
+    activeExamSoal.forEach((_, idx) => {
       html += `<div id="box-nav-${idx}" class="box-nomor" onclick="tampilkanSoal(${idx})">${idx + 1}</div>`;
     });
     document.getElementById('navigasiSoal').innerHTML = html;
   }
 
   function updateNavigasiUI() {
-    bankSoal.forEach((_, idx) => {
+    activeExamSoal.forEach((_, idx) => {
       let box = document.getElementById(`box-nav-${idx}`);
       box.className = 'box-nomor';
       if (jawabanSiswa[idx] !== null) box.classList.add('terjawab');
@@ -947,6 +1066,7 @@
     if (confirm("Kirim hasil jawaban Anda sekarang?")) kirimJawaban();
   }
 
+  // SYSTEM KALKULASI DINAMIS BERAPAPUN JUMLAH SOAL AKTIF BERNILAI SKALA FULL 100
   function kirimJawaban() {
     isUjianAktif = false;
     document.body.classList.remove('exam-mode-active');
@@ -958,7 +1078,7 @@
 
     let benar = 0;
     let rincianJawaban = [];
-    bankSoal.forEach((s, idx) => {
+    activeExamSoal.forEach((s, idx) => {
       let jwbUser = jawabanSiswa[idx];
       let isCorrect = (jwbUser === s.kunci);
       if (isCorrect) benar++;
@@ -972,14 +1092,17 @@
         isCorrect: isCorrect
       });
     });
-    let nilai = Math.round((benar / bankSoal.length) * 100);
+
+    // RUMUS PENILAIAN FULL SKALA 100 DINAMIS
+    let totalSoalAktif = activeExamSoal.length;
+    let nilai = totalSoalAktif > 0 ? Math.round((benar / totalSoalAktif) * 100) : 0;
 
     const hasilRef = db.ref('hasil_ujian').push();
     hasilRef.set({
       nama: nama,
       kelas: kelas,
       nilai: nilai,
-      benar: `${benar} / ${bankSoal.length}`,
+      benar: `${benar} / ${totalSoalAktif}`,
       pelanggaran: `${jumlahPelanggaran} Kali`,
       waktu: new Date().toLocaleString("id-ID"),
       rincian: rincianJawaban
@@ -992,7 +1115,7 @@
         document.getElementById('detailNilaiContainer').classList.remove('d-none');
         document.getElementById('detailNilai').innerText = nilai;
         document.getElementById('detailBenar').innerText = benar;
-        document.getElementById('detailSalah').innerText = bankSoal.length - benar;
+        document.getElementById('detailSalah').innerText = totalSoalAktif - benar;
       }
     });
   }
@@ -1040,7 +1163,7 @@
             <td>${item.kelas}</td>
             <td>${item.waktu}</td>
             <td class="text-success fw-bold">${item.benar}</td>
-            <td class="text-danger fw-bold">${bankSoal.length - parseInt(item.benar)}</td>
+            <td class="text-danger fw-bold">${(bankSoal.filter(s=>s.isAktif!==false).length) - parseInt(item.benar)}</td>
             <td><span class="badge bg-warning text-dark">${item.pelanggaran || '0 Kali'}</span></td>
             <td class="fw-bold text-primary fs-6">${item.nilai}</td>
             <td class="text-center">
@@ -1066,7 +1189,6 @@
     if (confirm("Reset seluruh data nilai siswa?")) db.ref('hasil_ujian').remove();
   }
 
-  // SIMPAN SETTING BERSAMA WARNA TEMA
   function simpanSettingUjian(e) {
     e.preventDefault();
     let themeVal = document.getElementById('cfgThemeColor').value;
@@ -1196,7 +1318,6 @@
     document.getElementById('viewDaftarSesiArsip').classList.remove('d-none');
   }
 
-  // RENDER SOAL GURU LENGKAP DENGAN BADGE STATUS & TOMBOL ACTION (NONAKTIFKAN, PREVIEW, EDIT, HAPUS)
   function renderBankSoalGuru() {
     const container = document.getElementById('listSoalGuruContainer');
     if (!bankSoal || bankSoal.length === 0) {
@@ -1208,8 +1329,10 @@
       let optionsHtml = '';
       item.pilihan.forEach((p, pIdx) => {
         let isBenar = pIdx === item.kunci;
+        let optImgHtml = (item.pilihanImg && item.pilihanImg[pIdx]) ? `<div class="mt-1"><img src="${item.pilihanImg[pIdx]}" style="max-height:70px" class="rounded border"></div>` : '';
         optionsHtml += `<div class="small mb-1 ${isBenar ? 'text-success fw-bold' : 'text-muted'}">
           ${String.fromCharCode(65 + pIdx)}. ${p} ${isBenar ? '<span class="badge bg-success ms-1">Kunci</span>' : ''}
+          ${optImgHtml}
         </div>`;
       });
 
@@ -1232,7 +1355,7 @@
             <button class="btn btn-outline-secondary btn-sm fw-bold" onclick="previewSoalGuru(${idx})">
               <i class="bi bi-eye me-1"></i>Preview
             </button>
-            <button class="btn btn-outline-primary btn-sm fw-bold" onclick="editSoalGuru(${idx})">
+            <button class="btn btn-outline-primary btn-sm fw-bold" onclick="bukaModalEditSoal(${idx})">
               <i class="bi bi-pencil-square me-1"></i>Edit
             </button>
             <button class="btn btn-outline-danger btn-sm fw-bold" onclick="hapusSoalGuru(${idx})">
@@ -1248,7 +1371,6 @@
     container.innerHTML = html;
   }
 
-  // FUNGSI AKSI UNTUK MASING-MASING SOAL
   function toggleStatusSoal(idx) {
     bankSoal[idx].isAktif = !(bankSoal[idx].isAktif !== false);
     db.ref('bank_soal').set(bankSoal);
@@ -1260,15 +1382,120 @@
     alert(`PREVIEW SOAL NO ${idx + 1}:\n\n${item.soal}\n\n${pilStr}\n\nKUNCI: ${String.fromCharCode(65 + item.kunci)}`);
   }
 
-  function editSoalGuru(idx) {
+  // LOGIKA MODAL POP-UP EDIT SOAL (UPLOAD GAMBAR SOAL + OPSI + KUNCI)
+  function bukaModalEditSoal(idx) {
     let item = bankSoal[idx];
-    let teksSoal = prompt("Edit Pertanyaan Soal:", item.soal);
-    if(teksSoal !== null) {
-      bankSoal[idx].soal = teksSoal;
-      db.ref('bank_soal').set(bankSoal, () => {
-        Swal.fire({ icon: 'success', title: 'Soal Berhasil Diperbarui!' });
-      });
+    document.getElementById('editSoalIndex').value = idx;
+    document.getElementById('titleModalEditSoal').innerText = `Edit Soal No. ${idx + 1}`;
+    document.getElementById('editTeksSoal').value = item.soal;
+
+    tempEditImgSoal = item.imageBase64 || null;
+    tempEditImgOpt = item.pilihanImg ? [...item.pilihanImg] : [null, null, null, null];
+
+    const prevBox = document.getElementById('previewEditImgSoalBox');
+    const prevImg = document.getElementById('imgEditSoalPreview');
+    if (tempEditImgSoal) {
+      prevImg.src = tempEditImgSoal;
+      prevBox.classList.remove('d-none');
+    } else {
+      prevBox.classList.add('d-none');
     }
+
+    document.getElementById('editOpsiA').value = item.pilihan[0] || '';
+    document.getElementById('editOpsiB').value = item.pilihan[1] || '';
+    document.getElementById('editOpsiC').value = item.pilihan[2] || '';
+    document.getElementById('editOpsiD').value = item.pilihan[3] || '';
+
+    // SET RADIO KUNCI
+    const radios = document.getElementsByName('radioKunciModal');
+    if(radios[item.kunci]) radios[item.kunci].checked = true;
+
+    // RESET & PREVIEW OPSI IMAGES
+    ['A', 'B', 'C', 'D'].forEach((char, i) => {
+      let imgVal = tempEditImgOpt[i];
+      let box = document.getElementById(`previewOpt${char}Box`);
+      let img = document.getElementById(`previewOpt${char}`);
+      if(imgVal) {
+        img.src = imgVal;
+        box.classList.remove('d-none');
+      } else {
+        box.classList.add('d-none');
+      }
+    });
+
+    modalEditSoalObj.show();
+  }
+
+  function previewUploadGambarSoal(input) {
+    let file = input.files[0];
+    if(!file) return;
+    let reader = new FileReader();
+    reader.onload = function(e) {
+      tempEditImgSoal = e.target.result;
+      document.getElementById('imgEditSoalPreview').src = tempEditImgSoal;
+      document.getElementById('previewEditImgSoalBox').classList.remove('d-none');
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function hapusGambarSoalEdit() {
+    tempEditImgSoal = null;
+    document.getElementById('editImgSoalFile').value = '';
+    document.getElementById('previewEditImgSoalBox').classList.add('d-none');
+  }
+
+  function previewUploadOpsiImg(input, imgElemId) {
+    let file = input.files[0];
+    if(!file) return;
+    let reader = new FileReader();
+    reader.onload = function(e) {
+      document.getElementById(imgElemId).src = e.target.result;
+      document.getElementById(imgElemId + 'Box').classList.remove('d-none');
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function simpanPerubahanEditSoal(e) {
+    e.preventDefault();
+    let idx = parseInt(document.getElementById('editSoalIndex').value);
+
+    let updatedSoal = document.getElementById('editTeksSoal').value;
+    let updatedPilihan = [
+      document.getElementById('editOpsiA').value,
+      document.getElementById('editOpsiB').value,
+      document.getElementById('editOpsiC').value,
+      document.getElementById('editOpsiD').value
+    ];
+
+    let selectedKunci = 0;
+    const radios = document.getElementsByName('radioKunciModal');
+    radios.forEach((r, rIdx) => { if(r.checked) selectedKunci = rIdx; });
+
+    let updatedPilihanImg = [
+      document.getElementById('previewOptA').src || null,
+      document.getElementById('previewOptB').src || null,
+      document.getElementById('previewOptC').src || null,
+      document.getElementById('previewOptD').src || null
+    ];
+    // CLEAN DATA BASE64 PREVIEW JIKA BOX HIDDEN
+    ['A', 'B', 'C', 'D'].forEach((char, i) => {
+      if(document.getElementById(`previewOpt${char}Box`).classList.contains('d-none')) {
+        updatedPilihanImg[i] = null;
+      }
+    });
+
+    bankSoal[idx].soal = updatedSoal;
+    bankSoal[idx].pilihan = updatedPilihan;
+    bankSoal[idx].kunci = selectedKunci;
+    bankSoal[idx].imageBase64 = tempEditImgSoal;
+    bankSoal[idx].pilihanImg = updatedPilihanImg;
+
+    db.ref('bank_soal').set(bankSoal, (err) => {
+      if(!err) {
+        modalEditSoalObj.hide();
+        Swal.fire({ icon: 'success', title: 'Soal Berhasil Diperbarui!' });
+      }
+    });
   }
 
   function hapusSoalGuru(idx) {
@@ -1370,7 +1597,7 @@
 
           if (isSoal) {
             if (current && current.pilihan.length > 0) list.push(current);
-            current = { soal: isSoal[2], imageBase64: imgSrc || null, pilihan: [], kunci: 0, isAktif: true };
+            current = { soal: isSoal[2], imageBase64: imgSrc || null, pilihan: [], kunci: 0, isAktif: true, pilihanImg: [null, null, null, null] };
           } else if (isKunci && current) {
             current.kunci = isKunci[2].toUpperCase().charCodeAt(0) - 65;
           } else if (isOpsi && current) {

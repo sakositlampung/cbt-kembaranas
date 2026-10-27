@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>TRY OUT BAHASA INDONESIA - FIREBASE CBT FULL POWER</title>
+  <title>KEMBARANAS III & PPIM NASIONAL - CBT ONLINE</title>
   
   <link rel="icon" type="image/png" href="https://lh3.googleusercontent.com/d/1mplZAkzyhqBlO2ENydXsShY-5CtlIKwY">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -36,7 +36,7 @@
     }
     
     .cbt-header { 
-      background: linear-gradient(135deg, #3730a3 0%, #4338ca 50%, #4f46e5 100%); 
+      background: var(--primary-color); 
       color: white; 
       padding: 12px 20px; 
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); 
@@ -45,7 +45,7 @@
     }
     .cbt-badge { 
       background: white; 
-      color: #4338ca; 
+      color: var(--primary-color); 
       font-weight: 800; 
       padding: 4px 10px; 
       border-radius: 8px; 
@@ -91,7 +91,6 @@
     .option-card:hover { background-color: #f3f4f6; }
     .option-card.selected { background-color: var(--primary-color); color: white; border-color: var(--primary-color); }
 
-    /* STAT CARD DENGAN ICON */
     .stat-card { 
       background: #fff; 
       border-radius: 12px; 
@@ -114,8 +113,8 @@
     .soal-item-card { 
       border-left: 5px solid var(--primary-color); 
       background: #fff; 
-      border-radius: 8px; 
-      padding: 16px; 
+      border-radius: 12px; 
+      padding: 18px 20px; 
       margin-bottom: 15px; 
     }
 
@@ -173,18 +172,18 @@
   </button>
 </div>
 
-<!-- HEADER -->
+<!-- HEADER (KEMBARANAS III & PPIM NASIONAL) -->
 <div class="cbt-header d-flex justify-content-between align-items-center flex-wrap gap-2">
   <div class="d-flex align-items-center gap-2 gap-sm-3">
     <button id="btnToggleSidebar" class="btn btn-outline-light btn-sm d-none shadow-sm" onclick="toggleGuruSidebar()">
       <i class="bi bi-list fs-5"></i>
     </button>
     <div class="cbt-badge d-flex align-items-center gap-1">
-      <i class="bi bi-journal-bookmark-fill text-primary me-1"></i> CBT
+      <i class="bi bi-journal-bookmark-fill me-1"></i> CBT
     </div>
     <div>
-      <h6 class="fw-bold mb-0 text-white fs-6">TRY OUT BAHASA INDONESIA</h6>
-      <small class="text-white-50" style="font-size:0.75rem;">Bu Nova Lestari, S.Pd.,Gr. • Firebase Cloud</small>
+      <h6 class="fw-bold mb-0 text-white fs-6">KEMBARANAS III & PPIM NASIONAL</h6>
+      <small class="text-white-50" style="font-size:0.75rem;">Sako Pramuka SIT Lampung</small>
     </div>
   </div>
 
@@ -212,7 +211,7 @@
           <div class="text-center mb-3">
             <i class="bi bi-mortarboard-fill text-primary display-4"></i>
             <h4 class="fw-bold text-primary mt-2 mb-1">Ujian CBT Online</h4>
-            <p class="text-muted small">Realtime Firebase Cloud Engine • Bebas Antrean</p>
+            <p class="text-muted small">Realtime Firebase Engine • Sako Pramuka SIT Lampung</p>
           </div>
           <form id="formIdentitas" onsubmit="mulaiUjian(event)">
             <div class="mb-3">
@@ -220,8 +219,8 @@
               <input type="text" id="namaSiswa" class="form-control" required placeholder="Masukkan Nama Lengkap">
             </div>
             <div class="mb-3">
-              <label class="form-label fw-semibold small">Nomor Ujian / Kelas</label>
-              <input type="text" id="kelasSiswa" class="form-control" required placeholder="Contoh: 9A">
+              <label class="form-label fw-semibold small">Nomor Ujian / Pangkalan</label>
+              <input type="text" id="kelasSiswa" class="form-control" required placeholder="Contoh: SDIT Permata">
             </div>
             <div class="alert alert-info py-2 small mb-3 d-flex align-items-center">
               <i class="bi bi-clock-history fs-5 me-2"></i>
@@ -334,7 +333,7 @@
     <!-- KONTEN GURU -->
     <div class="guru-content">
 
-      <!-- TAB REKAP NILAI (STAT CARD BER-ICON) -->
+      <!-- TAB REKAP NILAI -->
       <div id="tabGuruRekap">
         <div class="row g-3 mb-4">
           <div class="col-12 col-sm-4">
@@ -391,7 +390,7 @@
                 <tr>
                   <th>NO</th>
                   <th>NAMA PESERTA</th>
-                  <th>KELAS</th>
+                  <th>KELAS / PANGKALAN</th>
                   <th>WAKTU SELESAI</th>
                   <th>BENAR</th>
                   <th>SALAH</th>
@@ -447,13 +446,26 @@
         </div>
       </div>
 
-      <!-- TAB SETTING UJIAN (DESAIN PERSIS GAMBAR 1) -->
+      <!-- TAB SETTING UJIAN (LENGKAP DENGAN CUSTOM WARNA TEMA) -->
       <div id="tabGuruSetting" class="d-none">
         <div class="card card-cbt p-3 p-md-4">
-          <h5 class="fw-bold text-primary mb-4"><i class="bi bi-sliders me-2"></i>Pengaturan Aturan Ujian CBT</h5>
+          <h5 class="fw-bold text-primary mb-4"><i class="bi bi-sliders me-2"></i>Pengaturan Aturan Ujian & Tampilan</h5>
           
           <form id="formSettingUjian" onsubmit="simpanSettingUjian(event)">
             
+            <!-- CUSTOM TEMA WARNA APLIKASI -->
+            <div class="setting-card">
+              <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <div>
+                  <h6 class="fw-bold mb-1"><i class="bi bi-palette-fill me-2 text-primary"></i>Warna Tema Utama CBT</h6>
+                  <p class="text-muted small mb-0">Atur warna header & tombol aplikasi (Khusus Admin/Guru).</p>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                  <input type="color" id="cfgThemeColor" class="form-control form-control-color" value="#4338ca" title="Pilih Warna">
+                </div>
+              </div>
+            </div>
+
             <!-- 1. Durasi Waktu Ujian -->
             <div class="setting-card">
               <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
@@ -578,7 +590,7 @@
         </div>
       </div>
 
-      <!-- TAB KELOLA BANK SOAL (DESAIN PERSIS GAMBAR 2) -->
+      <!-- TAB KELOLA BANK SOAL (DENGAN TOMBOL PREVIEW, EDIT, HAPUS, NONAKTIFKAN) -->
       <div id="tabGuruBankSoal" class="d-none">
         <div class="card card-cbt p-3 p-md-4 mb-4">
           <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
@@ -611,7 +623,7 @@
           </div>
         </div>
 
-        <!-- DAFTAR ARSIP PAKET SOAL TERDAHULU (SESUAI GAMBAR 2) -->
+        <!-- DAFTAR ARSIP PAKET SOAL -->
         <div class="card card-cbt p-3 p-md-4 mb-4">
           <h6 class="fw-bold mb-3 text-warning"><i class="bi bi-archive-fill me-2"></i>Daftar Arsip Paket Soal Terdahulu</h6>
           <div class="table-responsive">
@@ -632,7 +644,7 @@
           </div>
         </div>
 
-        <!-- PRATINJAU DOKUMEN SOAL AKTIF -->
+        <!-- DAFTAR SOAL DENGAN TOMBOL NONAKTIFKAN, PREVIEW, EDIT, HAPUS -->
         <div id="listSoalGuruContainer"></div>
       </div>
 
@@ -712,8 +724,7 @@
   const db = firebase.database();
 
   let bankSoal = [
-    { soal: "Ibu kota negara Indonesia adalah...", pilihan: ["Bandung", "Surabaya", "Jakarta", "Medan"], kunci: 2 },
-    { soal: "Hasil dari 15 + (4 x 5) adalah...", pilihan: ["35", "95", "40", "25"], kunci: 0 }
+    { soal: "Tujuan utama Pendidikan dan Pelatihan Instruktur Muda (PPIM) adalah menyiapakan peserta agar mampu...", pilihan: ["Menggantikan seluruh tugas pembina pramuka", "Mengembangkan diri sebagai instruktur muda di gugus depan", "Mengelola seluruh administrasi kwartir", "Menjadi pemimpin semua kegiatan kepramukaan"], kunci: 1, isAktif: true }
   ];
 
   let jawabanSiswa = [];
@@ -725,20 +736,20 @@
   let jumlahPelanggaran = 0;
   let parsedWordSoal = [];
 
-  let globalConfig = { durasi: 60, acakSoal: true, acakJawaban: false, tampilHasil: true, batasiSatu: false, toleransiTab: 3 };
+  let globalConfig = { durasi: 60, acakSoal: true, acakJawaban: false, tampilHasil: true, batasiSatu: false, toleransiTab: 3, themeColor: "#4338ca" };
 
   document.addEventListener("DOMContentLoaded", function() {
     modalLoginObj = new bootstrap.Modal(document.getElementById('modalLogin'));
     modalImportWordObj = new bootstrap.Modal(document.getElementById('modalImportWord'));
 
-    // FIREBASE REALTIME LISTENER SOAL
+    // BACA BANK SOAL DARI FIREBASE
     db.ref('bank_soal').on('value', (snapshot) => {
       let data = snapshot.val();
       if(data) bankSoal = data;
       renderBankSoalGuru();
     });
 
-    // FIREBASE REALTIME LISTENER CONFIG
+    // BACA SETTING DARI FIREBASE (TERMASUK WARNA TEMA)
     db.ref('config_ujian').on('value', (snapshot) => {
       let cfg = snapshot.val();
       if(cfg) {
@@ -750,10 +761,14 @@
         document.getElementById('cfgAcakJawaban').checked = globalConfig.acakJawaban;
         document.getElementById('cfgBatasiSatu').checked = globalConfig.batasiSatu;
         document.getElementById('cfgToleransiTab').value = globalConfig.toleransiTab || 3;
+        if(globalConfig.themeColor) {
+          document.getElementById('cfgThemeColor').value = globalConfig.themeColor;
+          document.documentElement.style.setProperty('--primary-color', globalConfig.themeColor);
+        }
       }
     });
 
-    // ARSIP PAKET SOAL LISTENER
+    // ARSIP PAKET SOAL
     db.ref('arsip_bank_soal').on('value', (snapshot) => {
       let data = snapshot.val();
       let html = '';
@@ -777,7 +792,7 @@
       document.getElementById('bodyArsipPaketSoal').innerHTML = html;
     });
 
-    // SISTEM PENCEGAHAN KECURANGAN
+    // KECURANGAN
     document.addEventListener("visibilitychange", function() {
       if (isUjianAktif && document.hidden) trigPeringatan();
     });
@@ -1051,18 +1066,24 @@
     if (confirm("Reset seluruh data nilai siswa?")) db.ref('hasil_ujian').remove();
   }
 
+  // SIMPAN SETTING BERSAMA WARNA TEMA
   function simpanSettingUjian(e) {
     e.preventDefault();
+    let themeVal = document.getElementById('cfgThemeColor').value;
     let cfg = {
       durasi: parseInt(document.getElementById('cfgDurasiWaktu').value),
       tampilHasil: document.getElementById('cfgTampilHasil').checked,
       acakSoal: document.getElementById('cfgAcakSoal').checked,
       acakJawaban: document.getElementById('cfgAcakJawaban').checked,
       batasiSatu: document.getElementById('cfgBatasiSatu').checked,
-      toleransiTab: parseInt(document.getElementById('cfgToleransiTab').value)
+      toleransiTab: parseInt(document.getElementById('cfgToleransiTab').value),
+      themeColor: themeVal
     };
+
+    document.documentElement.style.setProperty('--primary-color', themeVal);
+
     db.ref('config_ujian').set(cfg, () => {
-      Swal.fire({ icon: 'success', title: 'Berhasil!', text: 'Aturan Ujian Berhasil Disimpan ke Firebase!', timer: 1800, showConfirmButton: false });
+      Swal.fire({ icon: 'success', title: 'Berhasil!', text: 'Aturan & Tema Warna Berhasil Disimpan!', timer: 1800, showConfirmButton: false });
     });
   }
 
@@ -1175,6 +1196,7 @@
     document.getElementById('viewDaftarSesiArsip').classList.remove('d-none');
   }
 
+  // RENDER SOAL GURU LENGKAP DENGAN BADGE STATUS & TOMBOL ACTION (NONAKTIFKAN, PREVIEW, EDIT, HAPUS)
   function renderBankSoalGuru() {
     const container = document.getElementById('listSoalGuruContainer');
     if (!bankSoal || bankSoal.length === 0) {
@@ -1191,14 +1213,71 @@
         </div>`;
       });
 
+      let statusBadge = (item.isAktif !== false) 
+        ? `<span class="badge bg-success me-2"><i class="bi bi-check-circle-fill me-1"></i>AKTIF</span>` 
+        : `<span class="badge bg-secondary me-2"><i class="bi bi-x-circle-fill me-1"></i>NONAKTIF</span>`;
+
+      let toggleBtnText = (item.isAktif !== false) ? 'Nonaktifkan' : 'Aktifkan';
+
       html += `<div class="soal-item-card shadow-sm mb-3">
-        <h6 class="fw-bold" style="color:var(--primary-color)">Soal No. ${idx + 1}</h6>
+        <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2 border-bottom pb-2">
+          <div class="d-flex align-items-center">
+            ${statusBadge}
+            <h6 class="fw-bold mb-0" style="color:var(--primary-color)">Soal No. ${idx + 1}</h6>
+          </div>
+          <div class="d-flex gap-1 flex-wrap">
+            <button class="btn btn-outline-warning btn-sm fw-bold" onclick="toggleStatusSoal(${idx})">
+              <i class="bi bi-eye-slash me-1"></i>${toggleBtnText}
+            </button>
+            <button class="btn btn-outline-secondary btn-sm fw-bold" onclick="previewSoalGuru(${idx})">
+              <i class="bi bi-eye me-1"></i>Preview
+            </button>
+            <button class="btn btn-outline-primary btn-sm fw-bold" onclick="editSoalGuru(${idx})">
+              <i class="bi bi-pencil-square me-1"></i>Edit
+            </button>
+            <button class="btn btn-outline-danger btn-sm fw-bold" onclick="hapusSoalGuru(${idx})">
+              <i class="bi bi-trash me-1"></i>Hapus
+            </button>
+          </div>
+        </div>
         <p class="fw-medium mb-2 small">${item.soal}</p>
         ${item.imageBase64 ? `<div class="mb-2"><img src="${item.imageBase64}" class="img-fluid rounded border" style="max-height:160px"></div>` : ''}
-        <div class="bg-light p-3 rounded">${optionsHtml}</div>
+        <div class="bg-light p-3 rounded mt-2">${optionsHtml}</div>
       </div>`;
     });
     container.innerHTML = html;
+  }
+
+  // FUNGSI AKSI UNTUK MASING-MASING SOAL
+  function toggleStatusSoal(idx) {
+    bankSoal[idx].isAktif = !(bankSoal[idx].isAktif !== false);
+    db.ref('bank_soal').set(bankSoal);
+  }
+
+  function previewSoalGuru(idx) {
+    let item = bankSoal[idx];
+    let pilStr = item.pilihan.map((p, i) => `${String.fromCharCode(65+i)}. ${p}`).join('\n');
+    alert(`PREVIEW SOAL NO ${idx + 1}:\n\n${item.soal}\n\n${pilStr}\n\nKUNCI: ${String.fromCharCode(65 + item.kunci)}`);
+  }
+
+  function editSoalGuru(idx) {
+    let item = bankSoal[idx];
+    let teksSoal = prompt("Edit Pertanyaan Soal:", item.soal);
+    if(teksSoal !== null) {
+      bankSoal[idx].soal = teksSoal;
+      db.ref('bank_soal').set(bankSoal, () => {
+        Swal.fire({ icon: 'success', title: 'Soal Berhasil Diperbarui!' });
+      });
+    }
+  }
+
+  function hapusSoalGuru(idx) {
+    if(confirm(`Yakin ingin menghapus Soal No. ${idx + 1}?`)) {
+      bankSoal.splice(idx, 1);
+      db.ref('bank_soal').set(bankSoal, () => {
+        Swal.fire({ icon: 'success', title: 'Soal Berhasil Dihapus!' });
+      });
+    }
   }
 
   function renderMenuAnalisisSoal() {
@@ -1291,7 +1370,7 @@
 
           if (isSoal) {
             if (current && current.pilihan.length > 0) list.push(current);
-            current = { soal: isSoal[2], imageBase64: imgSrc || null, pilihan: [], kunci: 0 };
+            current = { soal: isSoal[2], imageBase64: imgSrc || null, pilihan: [], kunci: 0, isAktif: true };
           } else if (isKunci && current) {
             current.kunci = isKunci[2].toUpperCase().charCodeAt(0) - 65;
           } else if (isOpsi && current) {

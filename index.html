@@ -5,7 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>KEMBARANAS III & PPIM NASIONAL - CBT ONLINE</title>
   
-  <link rel="icon" type="image/png" href="https://lh3.googleusercontent.com/d/1mplZAkzyhqBlO2ENydXsShY-5CtlIKwY">
+  <!-- FAVICON DARI GOOGLE DRIVE BARU -->
+  <link rel="icon" type="image/png" href="https://lh3.googleusercontent.com/d/1tcGKStRpQVCexhLIF4koMJq2waDHoPnn">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -121,7 +122,7 @@
     #cheatOverlay {
       position: fixed;
       top: 0; left: 0; width: 100vw; height: 100vh;
-      background-color: rgba(220, 38, 38, 0.96);
+      background-color: rgba(220, 38, 38, 0.98);
       z-index: 99999;
       display: flex; flex-direction: column; justify-content: center; align-items: center;
       color: white; text-align: center; padding: 20px;
@@ -157,14 +158,14 @@
     }
   </style>
 </head>
-<body>
+<body oncontextmenu="return false;" oncopy="return false;" oncut="return false;" onpaste="return false;">
 
-<!-- ALARM KECURANGAN -->
+<!-- ALARM KECURANGAN FULL POWER -->
 <div id="cheatOverlay" class="d-none">
-  <i class="bi bi-exclamation-triangle-fill display-1 mb-3"></i>
+  <i class="bi bi-exclamation-triangle-fill display-1 mb-3 text-warning"></i>
   <h1 class="fw-extrabold display-5 mb-2">PERINGATAN KECURANGAN!</h1>
-  <p class="fs-5 max-w-lg mb-4">Anda terdeteksi meninggalkan layar ujian / berpindah tab / keluar dari Fullscreen!</p>
-  <div class="card text-dark p-3 mb-4 shadow fw-bold">
+  <p class="fs-5 max-w-lg mb-4">Anda terdeteksi keluar layar / berpindah tab / melepas layar Fullscreen!</p>
+  <div class="card text-dark p-3 mb-4 shadow fw-bold border-0">
     Sisa Toleransi Kesempatan: <span id="lblSisaKesempatan" class="text-danger fs-3 ms-2">3</span> Kali Lagi
   </div>
   <button id="btnKembaliUjian" class="btn btn-light btn-lg fw-bold px-4 py-3 text-danger shadow" onclick="kembaliKeUjianFullscreen()">
@@ -172,14 +173,16 @@
   </button>
 </div>
 
-<!-- HEADER (KEMBARANAS III & PPIM NASIONAL) -->
+<!-- HEADER DENGAN LOGO BARU (KEMBARANAS III & PPIM NASIONAL) -->
 <div class="cbt-header d-flex justify-content-between align-items-center flex-wrap gap-2">
   <div class="d-flex align-items-center gap-2 gap-sm-3">
     <button id="btnToggleSidebar" class="btn btn-outline-light btn-sm d-none shadow-sm" onclick="toggleGuruSidebar()">
       <i class="bi bi-list fs-5"></i>
     </button>
-    <div class="cbt-badge d-flex align-items-center gap-1">
-      <i class="bi bi-journal-bookmark-fill me-1"></i> CBT
+    <!-- LOGO GAMBAR BARU DARI GOOGLE DRIVE -->
+    <div class="cbt-badge d-flex align-items-center gap-2 bg-white rounded-3 px-2 py-1">
+      <img src="https://lh3.googleusercontent.com/d/1tcGKStRpQVCexhLIF4koMJq2waDHoPnn" alt="Logo Header" style="height: 28px; width: auto; object-fit: contain;">
+      <span class="fw-extrabold" style="color:var(--primary-color); font-size:1rem;">CBT</span>
     </div>
     <div>
       <h6 class="fw-bold mb-0 text-white fs-6">KEMBARANAS III & PPIM NASIONAL</h6>
@@ -209,7 +212,7 @@
       <div class="col-12 col-sm-10 col-md-6 col-lg-5">
         <div class="card card-cbt p-4">
           <div class="text-center mb-3">
-            <i class="bi bi-mortarboard-fill text-primary display-4"></i>
+            <img src="https://lh3.googleusercontent.com/d/1tcGKStRpQVCexhLIF4koMJq2waDHoPnn" alt="Logo Utama" class="img-fluid mb-2" style="max-height: 80px;">
             <h4 class="fw-bold text-primary mt-2 mb-1">Ujian CBT Online</h4>
             <p class="text-muted small">Realtime Firebase Engine • Sako Pramuka SIT Lampung</p>
           </div>
@@ -646,7 +649,7 @@
 
 </div>
 
-<!-- MODAL EDIT SOAL POP-UP (PERSIS SESUAI GAMBAR D3553C) -->
+<!-- MODAL EDIT SOAL POP-UP -->
 <div class="modal fade" id="modalEditSoal" tabindex="-1">
   <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
     <div class="modal-content border-0 shadow">
@@ -658,13 +661,11 @@
         <form id="formEditSoalModal" onsubmit="simpanPerubahanEditSoal(event)">
           <input type="hidden" id="editSoalIndex">
 
-          <!-- Teks Pertanyaan / Soal -->
           <div class="mb-3">
             <label class="form-label fw-bold small">Teks Pertanyaan / Soal</label>
             <textarea id="editTeksSoal" class="form-control" rows="4" required></textarea>
           </div>
 
-          <!-- Gambar Soal Stimulus -->
           <div class="mb-4">
             <label class="form-label fw-bold small">Gambar Soal Stimulus</label>
             <input type="file" id="editImgSoalFile" class="form-control" accept="image/*" onchange="previewUploadGambarSoal(this)">
@@ -824,7 +825,7 @@
     { soal: "Tujuan utama Pendidikan dan Pelatihan Instruktur Muda (PPIM) adalah menyiapakan peserta agar mampu...", pilihan: ["Menggantikan seluruh tugas pembina pramuka", "Mengembangkan diri sebagai instruktur muda di gugus depan", "Mengelola seluruh administrasi kwartir", "Menjadi pemimpin semua kegiatan kepramukaan"], kunci: 1, isAktif: true }
   ];
 
-  let activeExamSoal = []; // FILTER SOAL AKTIF UNTUK SISWA
+  let activeExamSoal = [];
   let jawabanSiswa = [];
   let currentIndex = 0;
   let sisaWaktu = 60 * 60;
@@ -894,12 +895,29 @@
       document.getElementById('bodyArsipPaketSoal').innerHTML = html;
     });
 
-    // KECURANGAN
+    // SISTEM ANTI KECURANGAN FULL POWER STRICT
+    window.addEventListener("blur", function() {
+      if (isUjianAktif) trigPeringatan();
+    });
+
     document.addEventListener("visibilitychange", function() {
       if (isUjianAktif && document.hidden) trigPeringatan();
     });
-    window.addEventListener("blur", function() {
-      if (isUjianAktif) trigPeringatan();
+
+    document.addEventListener("fullscreenchange", function() {
+      if (isUjianAktif && !document.fullscreenElement) trigPeringatan();
+    });
+    document.addEventListener("webkitfullscreenchange", function() {
+      if (isUjianAktif && !document.webkitFullscreenElement) trigPeringatan();
+    });
+
+    document.addEventListener("keydown", function(e) {
+      if (isUjianAktif) {
+        if (e.key === "Tab" || e.altKey || e.ctrlKey || e.metaKey || e.key === "F12" || e.key === "PrintScreen") {
+          e.preventDefault();
+          trigPeringatan();
+        }
+      }
     });
   });
 
@@ -942,14 +960,15 @@
   }
 
   function trigPeringatan() {
+    if (!isUjianAktif) return;
     jumlahPelanggaran++;
     let max = globalConfig.toleransiTab || 3;
     let sisa = max - jumlahPelanggaran;
     document.getElementById('cheatOverlay').classList.remove('d-none');
-    document.getElementById('lblSisaKesempatan').innerText = sisa;
+    document.getElementById('lblSisaKesempatan').innerText = Math.max(0, sisa);
 
     if(sisa <= 0) {
-      alert("Toleransi kecurangan habis! Jawaban Anda dikirim otomatis.");
+      alert("Toleransi kecurangan telah habis! Jawaban Anda akan langsung dikirim otomatis.");
       kirimJawaban();
     }
   }
@@ -957,13 +976,16 @@
   function kembaliKeUjianFullscreen() {
     document.getElementById('cheatOverlay').classList.add('d-none');
     let elem = document.documentElement;
-    if (elem.requestFullscreen) elem.requestFullscreen().catch(()=>{});
+    if (elem.requestFullscreen) {
+      elem.requestFullscreen().catch(()=>{});
+    } else if (elem.webkitRequestFullscreen) {
+      elem.webkitRequestFullscreen();
+    }
   }
 
   function mulaiUjian(e) {
     e.preventDefault();
 
-    // AMBIL HANYA SOAL YANG BERSTATUS AKTIF
     activeExamSoal = bankSoal.filter(s => s.isAktif !== false);
 
     if (activeExamSoal.length === 0) {
@@ -976,11 +998,16 @@
     }
 
     isUjianAktif = true;
+    jumlahPelanggaran = 0;
     document.body.classList.add('exam-mode-active');
     jawabanSiswa = new Array(activeExamSoal.length).fill(null);
 
     let elem = document.documentElement;
-    if (elem.requestFullscreen) elem.requestFullscreen().catch(()=>{});
+    if (elem.requestFullscreen) {
+      elem.requestFullscreen().catch(()=>{});
+    } else if (elem.webkitRequestFullscreen) {
+      elem.webkitRequestFullscreen();
+    }
 
     document.getElementById('section-identitas').classList.add('d-none');
     document.getElementById('section-ujian').classList.remove('d-none');
@@ -1066,7 +1093,6 @@
     if (confirm("Kirim hasil jawaban Anda sekarang?")) kirimJawaban();
   }
 
-  // SYSTEM KALKULASI DINAMIS BERAPAPUN JUMLAH SOAL AKTIF BERNILAI SKALA FULL 100
   function kirimJawaban() {
     isUjianAktif = false;
     document.body.classList.remove('exam-mode-active');
@@ -1093,7 +1119,6 @@
       });
     });
 
-    // RUMUS PENILAIAN FULL SKALA 100 DINAMIS
     let totalSoalAktif = activeExamSoal.length;
     let nilai = totalSoalAktif > 0 ? Math.round((benar / totalSoalAktif) * 100) : 0;
 
@@ -1279,7 +1304,7 @@
           </tr>`;
         });
       } else {
-        html = '<tr><td colspan="5" class="text-center text-muted">Belum ada arsip nilai.</td></tr>';
+        html = '<tr><td colspan="5" class="text-center text-muted">Belum ada data arsip.</td></tr>';
       }
       document.getElementById('bodyDaftarSesiArsip').innerHTML = html;
     });
@@ -1382,7 +1407,6 @@
     alert(`PREVIEW SOAL NO ${idx + 1}:\n\n${item.soal}\n\n${pilStr}\n\nKUNCI: ${String.fromCharCode(65 + item.kunci)}`);
   }
 
-  // LOGIKA MODAL POP-UP EDIT SOAL (UPLOAD GAMBAR SOAL + OPSI + KUNCI)
   function bukaModalEditSoal(idx) {
     let item = bankSoal[idx];
     document.getElementById('editSoalIndex').value = idx;
@@ -1406,11 +1430,9 @@
     document.getElementById('editOpsiC').value = item.pilihan[2] || '';
     document.getElementById('editOpsiD').value = item.pilihan[3] || '';
 
-    // SET RADIO KUNCI
     const radios = document.getElementsByName('radioKunciModal');
     if(radios[item.kunci]) radios[item.kunci].checked = true;
 
-    // RESET & PREVIEW OPSI IMAGES
     ['A', 'B', 'C', 'D'].forEach((char, i) => {
       let imgVal = tempEditImgOpt[i];
       let box = document.getElementById(`previewOpt${char}Box`);
@@ -1477,7 +1499,6 @@
       document.getElementById('previewOptC').src || null,
       document.getElementById('previewOptD').src || null
     ];
-    // CLEAN DATA BASE64 PREVIEW JIKA BOX HIDDEN
     ['A', 'B', 'C', 'D'].forEach((char, i) => {
       if(document.getElementById(`previewOpt${char}Box`).classList.contains('d-none')) {
         updatedPilihanImg[i] = null;

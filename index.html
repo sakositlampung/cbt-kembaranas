@@ -1,0 +1,1359 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>TRY OUT BAHASA INDONESIA - FIREBASE CBT FULL POWER</title>
+  
+  <link rel="icon" type="image/png" href="https://lh3.googleusercontent.com/d/1mplZAkzyhqBlO2ENydXsShY-5CtlIKwY">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <!-- MAMMOTH JS UNTUK IMPORT WORD (.DOCX) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+
+  <!-- FIREBASE SDK COMPAT -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+
+  <style>
+    :root {
+      --primary-color: #4338ca;
+      --primary-hover: #3730a3;
+      --sidebar-width: 260px;
+      --sidebar-collapsed-width: 70px;
+    }
+
+    body { 
+      background-color: #f4f6f9; 
+      font-family: 'Segoe UI', Roboto, -apple-system, sans-serif; 
+      touch-action: manipulation;
+    }
+    
+    body.exam-mode-active {
+      user-select: none; 
+      -webkit-user-select: none;
+    }
+    
+    .cbt-header { 
+      background: linear-gradient(135deg, #3730a3 0%, #4338ca 50%, #4f46e5 100%); 
+      color: white; 
+      padding: 12px 20px; 
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); 
+      position: relative;
+      z-index: 1020;
+    }
+    .cbt-badge { 
+      background: white; 
+      color: #4338ca; 
+      font-weight: 800; 
+      padding: 4px 10px; 
+      border-radius: 8px; 
+      font-size: 1.1rem; 
+    }
+    .timer-box { 
+      background: rgba(255, 255, 255, 0.15); 
+      border: 1px solid rgba(255, 255, 255, 0.3); 
+      padding: 4px 12px; 
+      border-radius: 8px; 
+      font-weight: bold; 
+      color: #fde047; 
+      font-size: 1rem; 
+    }
+
+    .card-cbt { border-radius: 12px; border: none; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+    .box-nomor { 
+      width: 38px; 
+      height: 38px; 
+      line-height: 38px; 
+      text-align: center; 
+      border: 1px solid #ced4da; 
+      margin: 3px; 
+      border-radius: 8px; 
+      cursor: pointer; 
+      font-weight: 600; 
+      background: #fff;
+      font-size: 0.9rem;
+    }
+    .box-nomor.active { background-color: var(--primary-color); color: white; border-color: var(--primary-color); }
+    .box-nomor.terjawab { background-color: #16a34a; color: white; border-color: #16a34a; }
+    
+    .option-card { 
+      text-align: left; 
+      margin-bottom: 10px; 
+      border: 1px solid #dee2e6; 
+      padding: 12px 16px; 
+      border-radius: 8px; 
+      cursor: pointer; 
+      transition: all 0.2s; 
+      background: #fff; 
+    }
+    .option-card:hover { background-color: #f3f4f6; }
+    .option-card.selected { background-color: var(--primary-color); color: white; border-color: var(--primary-color); }
+
+    /* STAT CARD DENGAN ICON */
+    .stat-card { 
+      background: #fff; 
+      border-radius: 12px; 
+      padding: 18px 20px; 
+      border-left: 5px solid var(--primary-color); 
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .stat-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+    }
+    
+    .soal-item-card { 
+      border-left: 5px solid var(--primary-color); 
+      background: #fff; 
+      border-radius: 8px; 
+      padding: 16px; 
+      margin-bottom: 15px; 
+    }
+
+    #cheatOverlay {
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      background-color: rgba(220, 38, 38, 0.96);
+      z-index: 99999;
+      display: flex; flex-direction: column; justify-content: center; align-items: center;
+      color: white; text-align: center; padding: 20px;
+    }
+
+    .guru-wrapper { display: flex; width: 100%; min-height: calc(100vh - 70px); position: relative; }
+    .guru-sidebar {
+      width: var(--sidebar-width);
+      background: #1e1b4b; color: #e0e7ff;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex; flex-direction: column; flex-shrink: 0; z-index: 1010;
+    }
+    .guru-sidebar.collapsed { width: var(--sidebar-collapsed-width); }
+    .guru-sidebar.collapsed .menu-text, .guru-sidebar.collapsed .sidebar-header-title { display: none !important; }
+    .guru-sidebar.collapsed .sidebar-menu-btn { justify-content: center; padding: 12px 0; }
+    .guru-sidebar .sidebar-header { padding: 16px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); display: flex; align-items: center; justify-content: space-between; }
+    .guru-sidebar .sidebar-menu-btn {
+      width: 100%; display: flex; align-items: center; gap: 12px; padding: 12px 18px;
+      border: none; background: transparent; color: #c7d2fe; font-weight: 600; font-size: 0.95rem;
+      border-left: 4px solid transparent; transition: all 0.2s; text-align: left;
+    }
+    .guru-sidebar .sidebar-menu-btn:hover { background: rgba(255, 255, 255, 0.08); color: white; }
+    .guru-sidebar .sidebar-menu-btn.active { background: rgba(255, 255, 255, 0.15); color: white; border-left-color: #fde047; }
+    .guru-content { flex-grow: 1; padding: 20px; width: 100%; overflow-x: hidden; }
+
+    .sidebar-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1005; }
+    .setting-card { background: #fff; border-radius: 12px; padding: 18px 22px; margin-bottom: 15px; border: 1px solid #e5e7eb; }
+
+    @media (max-width: 991.98px) {
+      .guru-sidebar { position: fixed; top: 0; left: -260px; height: 100vh; z-index: 1030; }
+      .guru-sidebar.mobile-open { left: 0; }
+      .sidebar-overlay.mobile-open { display: block; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ALARM KECURANGAN -->
+<div id="cheatOverlay" class="d-none">
+  <i class="bi bi-exclamation-triangle-fill display-1 mb-3"></i>
+  <h1 class="fw-extrabold display-5 mb-2">PERINGATAN KECURANGAN!</h1>
+  <p class="fs-5 max-w-lg mb-4">Anda terdeteksi meninggalkan layar ujian / berpindah tab / keluar dari Fullscreen!</p>
+  <div class="card text-dark p-3 mb-4 shadow fw-bold">
+    Sisa Toleransi Kesempatan: <span id="lblSisaKesempatan" class="text-danger fs-3 ms-2">3</span> Kali Lagi
+  </div>
+  <button id="btnKembaliUjian" class="btn btn-light btn-lg fw-bold px-4 py-3 text-danger shadow" onclick="kembaliKeUjianFullscreen()">
+    <i class="bi bi-arrows-fullscreen me-2"></i> Kembali Ujian Fullscreen
+  </button>
+</div>
+
+<!-- HEADER -->
+<div class="cbt-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+  <div class="d-flex align-items-center gap-2 gap-sm-3">
+    <button id="btnToggleSidebar" class="btn btn-outline-light btn-sm d-none shadow-sm" onclick="toggleGuruSidebar()">
+      <i class="bi bi-list fs-5"></i>
+    </button>
+    <div class="cbt-badge d-flex align-items-center gap-1">
+      <i class="bi bi-journal-bookmark-fill text-primary me-1"></i> CBT
+    </div>
+    <div>
+      <h6 class="fw-bold mb-0 text-white fs-6">TRY OUT BAHASA INDONESIA</h6>
+      <small class="text-white-50" style="font-size:0.75rem;">Bu Nova Lestari, S.Pd.,Gr. • Firebase Cloud</small>
+    </div>
+  </div>
+
+  <div class="d-flex align-items-center gap-2 gap-sm-3">
+    <div id="headerTimer" class="timer-box d-none">
+      <i class="bi bi-clock me-1"></i> <span id="timer">60 : 00</span>
+    </div>
+
+    <button id="btnModeGuru" class="btn btn-outline-light rounded-3 px-3 btn-sm shadow-sm" onclick="showModalLogin()">
+      <i class="bi bi-shield-lock me-1"></i> Mode Guru
+    </button>
+    <button id="btnModeSiswa" class="btn btn-outline-light rounded-3 px-3 btn-sm d-none shadow-sm" onclick="keModeSiswa()">
+      <i class="bi bi-box-arrow-right me-1"></i> Keluar
+    </button>
+  </div>
+</div>
+
+<div class="container-fluid p-0">
+
+  <!-- IDENTITAS SISWA -->
+  <div id="section-identitas" class="container py-4">
+    <div class="row justify-content-center my-3 my-md-5">
+      <div class="col-12 col-sm-10 col-md-6 col-lg-5">
+        <div class="card card-cbt p-4">
+          <div class="text-center mb-3">
+            <i class="bi bi-mortarboard-fill text-primary display-4"></i>
+            <h4 class="fw-bold text-primary mt-2 mb-1">Ujian CBT Online</h4>
+            <p class="text-muted small">Realtime Firebase Cloud Engine • Bebas Antrean</p>
+          </div>
+          <form id="formIdentitas" onsubmit="mulaiUjian(event)">
+            <div class="mb-3">
+              <label class="form-label fw-semibold small">Nama Lengkap</label>
+              <input type="text" id="namaSiswa" class="form-control" required placeholder="Masukkan Nama Lengkap">
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-semibold small">Nomor Ujian / Kelas</label>
+              <input type="text" id="kelasSiswa" class="form-control" required placeholder="Contoh: 9A">
+            </div>
+            <div class="alert alert-info py-2 small mb-3 d-flex align-items-center">
+              <i class="bi bi-clock-history fs-5 me-2"></i>
+              <div>Durasi Ujian: <b id="textDurasiInformasi">60</b> Menit</div>
+            </div>
+            <div class="alert alert-warning py-2 small mb-4">
+              <i class="bi bi-shield-exclamation me-1"></i> <b>Sistem Anti-Curang Aktif:</b> Dilarang keluar layar/pindah tab!
+            </div>
+            <button type="submit" id="btnMulai" class="btn w-100 py-2 fw-bold text-white shadow-sm" style="background:var(--primary-color)">Mulai Ujian Fullscreen</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- UJIAN SISWA -->
+  <div id="section-ujian" class="container py-3 d-none">
+    <div class="row g-3">
+      <div class="col-12 col-lg-8">
+        <div class="card card-cbt p-3 p-md-4">
+          <div class="d-flex justify-content-between align-items-center mb-3 border-bottom pb-2 flex-wrap gap-2">
+            <h6 class="fw-bold mb-0">Soal No. <span id="noSoalTitle">1</span></h6>
+            <span class="badge bg-success-subtle text-success border border-success px-3 py-2 fw-bold small">
+              <i class="bi bi-wifi me-1"></i> Terhubung ke Firebase Cloud
+            </span>
+          </div>
+
+          <div id="soalImgContainer" class="mb-3 text-center d-none">
+            <img id="soalImg" src="" class="img-fluid rounded border" style="max-height: 250px;">
+          </div>
+          <div id="soalContainer" class="fs-6 fs-md-5 mb-4 fw-medium">Memuat soal...</div>
+          <div id="pilihanContainer"></div>
+          <div class="d-flex justify-content-between mt-4 gap-2">
+            <button class="btn btn-outline-secondary px-3 px-md-4" id="btnPrev" onclick="prevSoal()">Sebelumnya</button>
+            <button class="btn btn-primary px-3 px-md-4" id="btnNext" onclick="nextSoal()" style="background:var(--primary-color)">Berikutnya</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-lg-4">
+        <div class="card card-cbt p-3">
+          <h6 class="fw-bold mb-3"><i class="bi bi-grid-3x3-gap-fill me-1 text-primary"></i> Navigasi Soal</h6>
+          <div id="navigasiSoal" class="d-flex flex-wrap justify-content-start"></div>
+          <button class="btn btn-success w-100 mt-4 fw-bold shadow-sm py-2" onclick="konfirmasiSelesai()">Selesai & Kirim</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HASIL UJIAN -->
+  <div id="section-hasil" class="container py-4 d-none">
+    <div class="row justify-content-center my-4">
+      <div class="col-12 col-md-8 col-lg-6 text-center">
+        <div class="card card-cbt p-4 p-md-5">
+          <h3 class="text-success fw-bold"><i class="bi bi-check-circle-fill me-2"></i>Ujian Selesai!</h3>
+          <p class="text-muted mt-2 small">Jawaban Anda berhasil tersimpan di Firebase Cloud.</p>
+          
+          <div id="detailNilaiContainer" class="my-4 p-3 p-md-4 rounded-3 border bg-light d-none">
+            <h1 id="detailNilai" class="display-3 fw-bold mb-2" style="color:var(--primary-color)">0</h1>
+            <div class="d-flex justify-content-center gap-3 mt-3">
+              <span class="badge bg-success fs-6 px-3 py-2">Benar: <b id="detailBenar">0</b></span>
+              <span class="badge bg-danger fs-6 px-3 py-2">Salah: <b id="detailSalah">0</b></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PANEL GURU -->
+  <div id="section-guru" class="guru-wrapper d-none">
+    <div id="sidebarOverlay" class="sidebar-overlay" onclick="toggleGuruSidebar()"></div>
+
+    <!-- SIDEBAR KIRI -->
+    <div id="guruSidebar" class="guru-sidebar">
+      <div class="sidebar-header">
+        <div class="d-flex align-items-center gap-2 sidebar-header-title">
+          <i class="bi bi-speedometer2 fs-5 text-warning"></i>
+          <span class="fw-bold text-white fs-6">Panel Guru</span>
+        </div>
+        <button class="btn btn-sm text-white-50 p-0 border-0" onclick="toggleGuruSidebar()">
+          <i class="bi bi-chevron-left fs-5"></i>
+        </button>
+      </div>
+
+      <div class="py-2">
+        <button class="sidebar-menu-btn active" onclick="switchTabGuru('rekap', this)">
+          <i class="bi bi-bar-chart fs-5"></i>
+          <span class="menu-text">Rekap Hasil Nilai</span>
+        </button>
+        <button class="sidebar-menu-btn" onclick="switchTabGuru('analisis', this)">
+          <i class="bi bi-pie-chart-fill fs-5"></i>
+          <span class="menu-text">Analisis Soal</span>
+        </button>
+        <button class="sidebar-menu-btn" onclick="switchTabGuru('setting', this)">
+          <i class="bi bi-sliders fs-5"></i>
+          <span class="menu-text">Setting Ujian</span>
+        </button>
+        <button class="sidebar-menu-btn" onclick="switchTabGuru('arsip', this)">
+          <i class="bi bi-archive fs-5"></i>
+          <span class="menu-text">Arsip Nilai Ujian</span>
+        </button>
+        <button class="sidebar-menu-btn" onclick="switchTabGuru('banksoal', this)">
+          <i class="bi bi-journal-text fs-5"></i>
+          <span class="menu-text">Kelola Bank Soal</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- KONTEN GURU -->
+    <div class="guru-content">
+
+      <!-- TAB REKAP NILAI (STAT CARD BER-ICON) -->
+      <div id="tabGuruRekap">
+        <div class="row g-3 mb-4">
+          <div class="col-12 col-sm-4">
+            <div class="stat-card shadow-sm">
+              <div>
+                <span class="text-muted small fw-bold d-block">TOTAL PESERTA</span>
+                <h3 id="statTotal" class="fw-bold mb-0 mt-1" style="color:var(--primary-color)">0</h3>
+              </div>
+              <div class="stat-icon bg-primary-subtle text-primary">
+                <i class="bi bi-people-fill"></i>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 col-sm-4">
+            <div class="stat-card shadow-sm" style="border-left-color:#16a34a">
+              <div>
+                <span class="text-muted small fw-bold d-block">RATA-RATA NILAI</span>
+                <h3 id="statAvg" class="fw-bold mb-0 mt-1 text-success">0</h3>
+              </div>
+              <div class="stat-icon bg-success-subtle text-success">
+                <i class="bi bi-award-fill"></i>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 col-sm-4">
+            <div class="stat-card shadow-sm" style="border-left-color:#eab308">
+              <div>
+                <span class="text-muted small fw-bold d-block">NILAI TERTINGGI</span>
+                <h3 id="statMax" class="fw-bold mb-0 mt-1 text-warning">0</h3>
+              </div>
+              <div class="stat-icon bg-warning-subtle text-warning">
+                <i class="bi bi-trophy-fill"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card card-cbt p-3 p-md-4">
+          <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+            <div>
+              <h6 class="fw-bold mb-1">Daftar Nilai Peserta Didik Aktif (Realtime)</h6>
+              <p class="text-muted small mb-0">Semua data terhubung langsung dengan sistem Firebase Cloud Engine.</p>
+            </div>
+            <div class="d-flex gap-2 flex-wrap">
+              <button class="btn btn-warning btn-sm fw-bold text-dark" onclick="prosesArsipNilai()"><i class="bi bi-archive me-1"></i> Arsipkan Hasil</button>
+              <button class="btn btn-success btn-sm fw-bold" onclick="exportTableToCSV('tabelNilaiGuru', 'Rekap_Nilai_CBT.csv')"><i class="bi bi-download me-1"></i> CSV</button>
+              <button class="btn btn-danger btn-sm fw-bold" onclick="konfirmasiResetNilai()"><i class="bi bi-trash me-1"></i> Reset</button>
+            </div>
+          </div>
+
+          <div class="table-responsive">
+            <table class="table table-hover align-middle small" id="tabelNilaiGuru">
+              <thead class="table-light">
+                <tr>
+                  <th>NO</th>
+                  <th>NAMA PESERTA</th>
+                  <th>KELAS</th>
+                  <th>WAKTU SELESAI</th>
+                  <th>BENAR</th>
+                  <th>SALAH</th>
+                  <th>PELANGGARAN</th>
+                  <th>NILAI</th>
+                  <th class="text-center">AKSI</th>
+                </tr>
+              </thead>
+              <tbody id="bodyNilaiGuru">
+                <tr><td colspan="9" class="text-center text-muted">Memuat data dari Firebase...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB ANALISIS SOAL -->
+      <div id="tabGuruAnalisis" class="d-none">
+        <div class="card card-cbt p-3 p-md-4 mb-4">
+          <h6 class="fw-bold mb-3"><i class="bi bi-pie-chart-fill text-primary me-2"></i>Matriks Analisis Jawaban Per Nomor Soal</h6>
+          <div class="table-responsive">
+            <table class="table table-bordered table-hover align-middle small text-center" id="tabelMatriksAnalisis">
+              <thead class="table-light">
+                <tr id="headerMatriksAnalisis">
+                  <th>NO</th><th>NAMA PESERTA</th><th>KELAS</th><th>SKOR</th>
+                </tr>
+              </thead>
+              <tbody id="bodyMatriksAnalisis">
+                <tr><td colspan="4" class="text-center text-muted">Memuat data analisis...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card card-cbt p-3 p-md-4">
+          <h6 class="fw-bold mb-3"><i class="bi bi-bar-chart-line-fill text-warning me-2"></i>Tingkat Keberhasilan Per Nomor Soal</h6>
+          <div class="table-responsive">
+            <table class="table table-bordered table-hover align-middle small">
+              <thead class="table-light">
+                <tr>
+                  <th class="text-center">NO SOAL</th>
+                  <th class="text-center">JUMLAH BENAR</th>
+                  <th class="text-center">JUMLAH SALAH</th>
+                  <th class="text-center">PERSENTASE BENAR</th>
+                  <th class="text-center">KATEGORI TINGKAT SOAL</th>
+                </tr>
+              </thead>
+              <tbody id="bodyStatSoalAnalisis">
+                <tr><td colspan="5" class="text-center text-muted">Belum ada data pengerjaan.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB SETTING UJIAN (DESAIN PERSIS GAMBAR 1) -->
+      <div id="tabGuruSetting" class="d-none">
+        <div class="card card-cbt p-3 p-md-4">
+          <h5 class="fw-bold text-primary mb-4"><i class="bi bi-sliders me-2"></i>Pengaturan Aturan Ujian CBT</h5>
+          
+          <form id="formSettingUjian" onsubmit="simpanSettingUjian(event)">
+            
+            <!-- 1. Durasi Waktu Ujian -->
+            <div class="setting-card">
+              <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <div>
+                  <h6 class="fw-bold mb-1"><i class="bi bi-clock me-2 text-primary"></i>Durasi Waktu Ujian</h6>
+                  <p class="text-muted small mb-0">Lama waktu pengerjaan soal (Default: 60 Menit).</p>
+                </div>
+                <div class="input-group" style="width: 170px;">
+                  <input type="number" id="cfgDurasiWaktu" class="form-control text-center fw-bold" value="60" min="1" required>
+                  <span class="input-group-text small bg-light fw-medium">Menit</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- 2. Tampilkan Info Hasil & Rilis Nilai Langsung -->
+            <div class="setting-card">
+              <div class="form-check form-switch d-flex justify-content-between align-items-center ps-0">
+                <div>
+                  <label class="form-check-label fw-bold small d-block" for="cfgTampilHasil">
+                    <i class="bi bi-eye me-2 text-primary"></i>Tampilkan Info Hasil & Rilis Nilai Langsung
+                  </label>
+                  <span class="text-muted small">Siswa dapat langsung melihat skor/nilai, jumlah benar, dan salah setelah klik selesai.</span>
+                </div>
+                <input class="form-check-input ms-auto" type="checkbox" role="switch" id="cfgTampilHasil" checked>
+              </div>
+            </div>
+
+            <!-- 3. Acak Urutan Soal -->
+            <div class="setting-card">
+              <div class="form-check form-switch d-flex justify-content-between align-items-center ps-0">
+                <div>
+                  <label class="form-check-label fw-bold small d-block" for="cfgAcakSoal">
+                    <i class="bi bi-shuffle me-2 text-primary"></i>Acak Urutan Soal
+                  </label>
+                  <span class="text-muted small">Urutan soal diacak otomatis untuk setiap siswa.</span>
+                </div>
+                <input class="form-check-input ms-auto" type="checkbox" role="switch" id="cfgAcakSoal" checked>
+              </div>
+            </div>
+
+            <!-- 4. Acak Pilihan Jawaban -->
+            <div class="setting-card">
+              <div class="form-check form-switch d-flex justify-content-between align-items-center ps-0">
+                <div>
+                  <label class="form-check-label fw-bold small d-block" for="cfgAcakJawaban">
+                    <i class="bi bi-arrow-repeat me-2 text-success"></i>Acak Pilihan Jawaban
+                  </label>
+                  <span class="text-muted small">Posisi pilihan A, B, C, D diacak otomatis per siswa.</span>
+                </div>
+                <input class="form-check-input ms-auto" type="checkbox" role="switch" id="cfgAcakJawaban">
+              </div>
+            </div>
+
+            <!-- 5. Batasi 1 Kali Mengerjakan -->
+            <div class="setting-card">
+              <div class="form-check form-switch d-flex justify-content-between align-items-center ps-0">
+                <div>
+                  <label class="form-check-label fw-bold small d-block" for="cfgBatasiSatu">
+                    <i class="bi bi-person-lock me-2 text-warning"></i>Batasi 1 Kali Mengerjakan
+                  </label>
+                  <span class="text-muted small">Siswa dengan Nama & Kelas sama tidak bisa mengerjakan 2x.</span>
+                </div>
+                <input class="form-check-input ms-auto" type="checkbox" role="switch" id="cfgBatasiSatu">
+              </div>
+            </div>
+
+            <!-- 6. Toleransi Pelanggaran Tab -->
+            <div class="setting-card">
+              <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <div>
+                  <h6 class="fw-bold mb-1 text-danger"><i class="bi bi-shield-slash me-2"></i>Toleransi Pelanggaran Tab</h6>
+                  <p class="text-muted small mb-0">Maksimal keluar layar/pindah tab sebelum didiskualifikasi.</p>
+                </div>
+                <div class="input-group" style="width: 170px;">
+                  <input type="number" id="cfgToleransiTab" class="form-control text-center fw-bold" value="3" min="1" required>
+                  <span class="input-group-text small bg-light fw-medium">Kali</span>
+                </div>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary fw-bold px-4 py-2 mt-2 shadow-sm" style="background:var(--primary-color)">
+              <i class="bi bi-check-circle-fill me-1"></i> Simpan Pengaturan
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- TAB ARSIP NILAI -->
+      <div id="tabGuruArsip" class="d-none">
+        <div id="viewDaftarSesiArsip" class="card card-cbt p-3 p-md-4 mb-4">
+          <h6 class="fw-bold mb-3"><i class="bi bi-archive-fill text-warning me-2"></i>Daftar Arsip Nilai Ujian Terdahulu</h6>
+          <div class="table-responsive">
+            <table class="table table-bordered table-hover align-middle small">
+              <thead class="table-light">
+                <tr>
+                  <th>NO</th><th>LABEL / UJIAN</th><th>TANGGAL PENGARSIPAN</th><th class="text-center">JUMLAH PESERTA</th><th class="text-center">LINK</th>
+                </tr>
+              </thead>
+              <tbody id="bodyDaftarSesiArsip">
+                <tr><td colspan="5" class="text-center text-muted">Belum ada data arsip.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div id="viewDetailSesiArsip" class="card card-cbt p-3 p-md-4 d-none">
+          <div class="d-flex justify-content-between align-items-center mb-3 border-bottom pb-2">
+            <button class="btn btn-outline-secondary btn-sm fw-bold" onclick="kembaliKeDaftarSesiArsip()"><i class="bi bi-arrow-left me-1"></i> Kembali</button>
+            <h5 class="fw-bold text-primary mb-0" id="titleSesiArsipAktif">Daftar Nilai Arsip</h5>
+            <button class="btn btn-success btn-sm fw-bold" onclick="exportTableToCSV('tabelDetailPesertaArsip', 'Daftar_Arsip_Nilai.csv')"><i class="bi bi-download me-1"></i> Unduh CSV</button>
+          </div>
+          <div class="table-responsive">
+            <table class="table table-bordered table-hover align-middle small" id="tabelDetailPesertaArsip">
+              <thead class="table-light">
+                <tr>
+                  <th>NO</th><th>LABEL / UJIAN</th><th>NAMA PESERTA</th><th>KELAS</th><th>NILAI</th><th>BENAR/TOTAL</th><th>SELESAI</th><th>PELANGGARAN</th><th>TGL ARSIP</th>
+                </tr>
+              </thead>
+              <tbody id="bodyArsipNilai"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB KELOLA BANK SOAL (DESAIN PERSIS GAMBAR 2) -->
+      <div id="tabGuruBankSoal" class="d-none">
+        <div class="card card-cbt p-3 p-md-4 mb-4">
+          <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div>
+              <h6 class="fw-bold mb-1"><i class="bi bi-journal-text me-2"></i>Manajemen Bank Soal & Status Ujian</h6>
+              <p class="text-muted small mb-0">Edit, nonaktifkan, hapus soal, upload dari Word, dan arsipkan bank soal lama.</p>
+            </div>
+            <div class="d-flex gap-2 align-items-center flex-wrap">
+              <a href="https://docs.google.com/document/d/1CXso7Yn_-KWc6eqHGGSbE_Q1dnjFWFMJ/export?format=docx" target="_blank" class="btn btn-outline-success btn-sm fw-bold">
+                <i class="bi bi-file-earmark-arrow-down-fill me-1"></i> Template Word
+              </a>
+
+              <button class="btn btn-primary btn-sm fw-bold" onclick="bukaModalImportWord()">
+                <i class="bi bi-file-earmark-word-fill me-1"></i> Import dari Word
+              </button>
+
+              <button class="btn btn-warning btn-sm fw-bold text-dark" onclick="prosesArsipBankSoal()">
+                <i class="bi bi-archive-fill me-1"></i> Arsipkan Soal
+              </button>
+
+              <div class="form-check form-switch bg-light border p-2 px-3 rounded d-flex align-items-center gap-2">
+                <input class="form-check-input ms-0 mt-0" type="checkbox" role="switch" id="switchStatusUjian" checked onchange="toggleStatusUjian(this)">
+                <label class="form-check-label fw-bold small text-dark mb-0" for="switchStatusUjian" id="lblStatusUjian">Status: AKTIF</label>
+              </div>
+
+              <a id="btnEditFormDirect" href="https://docs.google.com/document/d/1CXso7Yn_-KWc6eqHGGSbE_Q1dnjFWFMJ/edit" target="_blank" class="btn btn-outline-primary btn-sm fw-bold">
+                <i class="bi bi-box-arrow-up-right me-1"></i> Form
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- DAFTAR ARSIP PAKET SOAL TERDAHULU (SESUAI GAMBAR 2) -->
+        <div class="card card-cbt p-3 p-md-4 mb-4">
+          <h6 class="fw-bold mb-3 text-warning"><i class="bi bi-archive-fill me-2"></i>Daftar Arsip Paket Soal Terdahulu</h6>
+          <div class="table-responsive">
+            <table class="table table-bordered table-hover align-middle small mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th>NO</th>
+                  <th>NAMA PAKET SOAL</th>
+                  <th class="text-center">JUMLAH SOAL</th>
+                  <th>TGL DIARSIPKAN</th>
+                  <th class="text-center">AKSI PULIHKAN</th>
+                </tr>
+              </thead>
+              <tbody id="bodyArsipPaketSoal">
+                <tr><td colspan="5" class="text-center text-muted">Belum ada paket soal yang diarsipkan.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- PRATINJAU DOKUMEN SOAL AKTIF -->
+        <div id="listSoalGuruContainer"></div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<!-- MODAL LOGIN GURU -->
+<div class="modal fade" id="modalLogin" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-sm">
+    <div class="modal-content border-0 shadow">
+      <div class="modal-header text-white" style="background:var(--primary-color)">
+        <h6 class="modal-title fw-bold text-white"><i class="bi bi-shield-lock me-1"></i> Login Guru</h6>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body p-4">
+        <form onsubmit="prosesLoginGuru(event)">
+          <div class="mb-3">
+            <label class="form-label small fw-bold">Password</label>
+            <input type="password" id="loginPass" class="form-control" required placeholder="Masukkan Password">
+          </div>
+          <button type="submit" class="btn btn-primary w-100 fw-bold" style="background:var(--primary-color)">Masuk Panel</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL IMPORT WORD -->
+<div class="modal fade" id="modalImportWord" tabindex="-1">
+  <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content border-0 shadow">
+      <div class="modal-header text-white" style="background:var(--primary-color)">
+        <h6 class="modal-title fw-bold text-white"><i class="bi bi-file-earmark-word-fill me-2"></i>Import Soal dari Word (.docx)</h6>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body p-4">
+        <div class="mb-3">
+          <label class="form-label fw-bold small">Pilih File Document Word (.docx)</label>
+          <input type="file" id="fileWordInput" class="form-control" accept=".docx" onchange="prosesFileWord(this)">
+        </div>
+        <div id="previewWordBox" class="d-none">
+          <h6 class="fw-bold text-primary">Preview Terbaca: <span id="countWord">0</span> Soal</h6>
+          <div class="table-responsive border rounded p-2 bg-light style-scroll" style="max-height:300px;">
+            <table class="table table-sm table-hover align-middle bg-white mb-0 small">
+              <thead class="table-secondary">
+                <tr><th>NO</th><th>SOAL</th><th>GAMBAR</th><th>OPSI JAWABAN</th><th>KUNCI</th></tr>
+              </thead>
+              <tbody id="bodyPreviewWord"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="btnUploadWord" class="btn btn-success fw-bold d-none" onclick="simpanSoalWordToFirebase()">Simpan Soal ke Firebase</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  // --- KONFIGURASI FIREBASE ANDA ---
+  const firebaseConfig = {
+    apiKey: "AIzaSyCWUvlfDHDmEFEaaWsUcQF3pXoyJ27rfaQ",
+    authDomain: "cbt-online-sekolah-9971a.firebaseapp.com",
+    databaseURL: "https://cbt-online-sekolah-9971a-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "cbt-online-sekolah-9971a",
+    storageBucket: "cbt-online-sekolah-9971a.firebasestorage.app",
+    messagingSenderId: "763989580024",
+    appId: "1:763989580024:web:93283052be9030bb25030d",
+    measurementId: "G-S0PQC0C9SD"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+
+  let bankSoal = [
+    { soal: "Ibu kota negara Indonesia adalah...", pilihan: ["Bandung", "Surabaya", "Jakarta", "Medan"], kunci: 2 },
+    { soal: "Hasil dari 15 + (4 x 5) adalah...", pilihan: ["35", "95", "40", "25"], kunci: 0 }
+  ];
+
+  let jawabanSiswa = [];
+  let currentIndex = 0;
+  let sisaWaktu = 60 * 60;
+  let timerInterval;
+  let modalLoginObj, modalImportWordObj;
+  let isUjianAktif = false;
+  let jumlahPelanggaran = 0;
+  let parsedWordSoal = [];
+
+  let globalConfig = { durasi: 60, acakSoal: true, acakJawaban: false, tampilHasil: true, batasiSatu: false, toleransiTab: 3 };
+
+  document.addEventListener("DOMContentLoaded", function() {
+    modalLoginObj = new bootstrap.Modal(document.getElementById('modalLogin'));
+    modalImportWordObj = new bootstrap.Modal(document.getElementById('modalImportWord'));
+
+    // FIREBASE REALTIME LISTENER SOAL
+    db.ref('bank_soal').on('value', (snapshot) => {
+      let data = snapshot.val();
+      if(data) bankSoal = data;
+      renderBankSoalGuru();
+    });
+
+    // FIREBASE REALTIME LISTENER CONFIG
+    db.ref('config_ujian').on('value', (snapshot) => {
+      let cfg = snapshot.val();
+      if(cfg) {
+        globalConfig = Object.assign(globalConfig, cfg);
+        document.getElementById('textDurasiInformasi').innerText = globalConfig.durasi;
+        document.getElementById('cfgDurasiWaktu').value = globalConfig.durasi;
+        document.getElementById('cfgTampilHasil').checked = globalConfig.tampilHasil;
+        document.getElementById('cfgAcakSoal').checked = globalConfig.acakSoal;
+        document.getElementById('cfgAcakJawaban').checked = globalConfig.acakJawaban;
+        document.getElementById('cfgBatasiSatu').checked = globalConfig.batasiSatu;
+        document.getElementById('cfgToleransiTab').value = globalConfig.toleransiTab || 3;
+      }
+    });
+
+    // ARSIP PAKET SOAL LISTENER
+    db.ref('arsip_bank_soal').on('value', (snapshot) => {
+      let data = snapshot.val();
+      let html = '';
+      let no = 1;
+      if (data) {
+        Object.keys(data).forEach(k => {
+          let p = data[k];
+          html += `<tr>
+            <td>${no++}</td>
+            <td class="fw-bold text-primary">${p.namaPaket}</td>
+            <td class="text-center"><span class="badge bg-info text-dark">${p.soal ? p.soal.length : 0} Soal</span></td>
+            <td>${p.tglDiarsipkan}</td>
+            <td class="text-center">
+              <button class="btn btn-success btn-sm fw-bold" onclick="pulihkanBankSoal('${k}')"><i class="bi bi-arrow-counterclockwise me-1"></i> Pulihkan</button>
+            </td>
+          </tr>`;
+        });
+      } else {
+        html = `<tr><td colspan="5" class="text-center text-muted">Belum ada paket soal yang diarsipkan.</td></tr>`;
+      }
+      document.getElementById('bodyArsipPaketSoal').innerHTML = html;
+    });
+
+    // SISTEM PENCEGAHAN KECURANGAN
+    document.addEventListener("visibilitychange", function() {
+      if (isUjianAktif && document.hidden) trigPeringatan();
+    });
+    window.addEventListener("blur", function() {
+      if (isUjianAktif) trigPeringatan();
+    });
+  });
+
+  function toggleGuruSidebar() {
+    const sidebar = document.getElementById('guruSidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    if (window.innerWidth < 992) {
+      sidebar.classList.toggle('mobile-open');
+      overlay.classList.toggle('mobile-open');
+    } else {
+      sidebar.classList.toggle('collapsed');
+    }
+  }
+
+  function switchTabGuru(tab, btnElem) {
+    document.querySelectorAll('.sidebar-menu-btn').forEach(el => el.classList.remove('active'));
+    if(btnElem) btnElem.classList.add('active');
+
+    document.getElementById('tabGuruRekap').classList.add('d-none');
+    document.getElementById('tabGuruAnalisis').classList.add('d-none');
+    document.getElementById('tabGuruSetting').classList.add('d-none');
+    document.getElementById('tabGuruArsip').classList.add('d-none');
+    document.getElementById('tabGuruBankSoal').classList.add('d-none');
+
+    if (tab === 'rekap') {
+      document.getElementById('tabGuruRekap').classList.remove('d-none');
+      loadRekapFirebase();
+    } else if (tab === 'analisis') {
+      document.getElementById('tabGuruAnalisis').classList.remove('d-none');
+      renderMenuAnalisisSoal();
+    } else if (tab === 'setting') {
+      document.getElementById('tabGuruSetting').classList.remove('d-none');
+    } else if (tab === 'arsip') {
+      document.getElementById('tabGuruArsip').classList.remove('d-none');
+      loadArsipNilaiFirebase();
+    } else {
+      document.getElementById('tabGuruBankSoal').classList.remove('d-none');
+      renderBankSoalGuru();
+    }
+  }
+
+  function trigPeringatan() {
+    jumlahPelanggaran++;
+    let max = globalConfig.toleransiTab || 3;
+    let sisa = max - jumlahPelanggaran;
+    document.getElementById('cheatOverlay').classList.remove('d-none');
+    document.getElementById('lblSisaKesempatan').innerText = sisa;
+
+    if(sisa <= 0) {
+      alert("Toleransi kecurangan habis! Jawaban Anda dikirim otomatis.");
+      kirimJawaban();
+    }
+  }
+
+  function kembaliKeUjianFullscreen() {
+    document.getElementById('cheatOverlay').classList.add('d-none');
+    let elem = document.documentElement;
+    if (elem.requestFullscreen) elem.requestFullscreen().catch(()=>{});
+  }
+
+  function mulaiUjian(e) {
+    e.preventDefault();
+    isUjianAktif = true;
+    document.body.classList.add('exam-mode-active');
+    jawabanSiswa = new Array(bankSoal.length).fill(null);
+
+    let elem = document.documentElement;
+    if (elem.requestFullscreen) elem.requestFullscreen().catch(()=>{});
+
+    document.getElementById('section-identitas').classList.add('d-none');
+    document.getElementById('section-ujian').classList.remove('d-none');
+    document.getElementById('headerTimer').classList.remove('d-none');
+
+    sisaWaktu = (globalConfig.durasi || 60) * 60;
+    renderNavigasi();
+    tampilkanSoal(0);
+    startTimer();
+  }
+
+  function tampilkanSoal(idx) {
+    currentIndex = idx;
+    document.getElementById('noSoalTitle').innerText = idx + 1;
+    document.getElementById('soalContainer').innerText = bankSoal[idx].soal;
+
+    const imgContainer = document.getElementById('soalImgContainer');
+    const soalImg = document.getElementById('soalImg');
+    if (bankSoal[idx].imageBase64) {
+      soalImg.src = bankSoal[idx].imageBase64;
+      imgContainer.classList.remove('d-none');
+    } else {
+      imgContainer.classList.add('d-none');
+    }
+
+    let html = '';
+    bankSoal[idx].pilihan.forEach((p, pIdx) => {
+      let sel = jawabanSiswa[idx] === pIdx ? 'selected' : '';
+      html += `<div class="option-card ${sel}" onclick="pilihJawaban(${pIdx})">
+        <strong>${String.fromCharCode(65 + pIdx)}.</strong> ${p}
+      </div>`;
+    });
+    document.getElementById('pilihanContainer').innerHTML = html;
+
+    document.getElementById('btnPrev').disabled = (idx === 0);
+    document.getElementById('btnNext').disabled = (idx === bankSoal.length - 1);
+    updateNavigasiUI();
+  }
+
+  function pilihJawaban(pIdx) {
+    jawabanSiswa[currentIndex] = pIdx;
+    tampilkanSoal(currentIndex);
+  }
+
+  function nextSoal() { if (currentIndex < bankSoal.length - 1) tampilkanSoal(currentIndex + 1); }
+  function prevSoal() { if (currentIndex > 0) tampilkanSoal(currentIndex - 1); }
+
+  function renderNavigasi() {
+    let html = '';
+    bankSoal.forEach((_, idx) => {
+      html += `<div id="box-nav-${idx}" class="box-nomor" onclick="tampilkanSoal(${idx})">${idx + 1}</div>`;
+    });
+    document.getElementById('navigasiSoal').innerHTML = html;
+  }
+
+  function updateNavigasiUI() {
+    bankSoal.forEach((_, idx) => {
+      let box = document.getElementById(`box-nav-${idx}`);
+      box.className = 'box-nomor';
+      if (jawabanSiswa[idx] !== null) box.classList.add('terjawab');
+      if (idx === currentIndex) box.classList.add('active');
+    });
+  }
+
+  function startTimer() {
+    timerInterval = setInterval(() => {
+      let menit = Math.floor(sisaWaktu / 60);
+      let detik = sisaWaktu % 60;
+      document.getElementById('timer').innerText = `${menit.toString().padStart(2, '0')} : ${detik.toString().padStart(2, '0')}`;
+      if (sisaWaktu <= 0) {
+        clearInterval(timerInterval);
+        kirimJawaban();
+      }
+      sisaWaktu--;
+    }, 1000);
+  }
+
+  function konfirmasiSelesai() {
+    if (confirm("Kirim hasil jawaban Anda sekarang?")) kirimJawaban();
+  }
+
+  function kirimJawaban() {
+    isUjianAktif = false;
+    document.body.classList.remove('exam-mode-active');
+    clearInterval(timerInterval);
+    if (document.fullscreenElement) document.exitFullscreen().catch(()=>{});
+
+    let nama = document.getElementById('namaSiswa').value;
+    let kelas = document.getElementById('kelasSiswa').value;
+
+    let benar = 0;
+    let rincianJawaban = [];
+    bankSoal.forEach((s, idx) => {
+      let jwbUser = jawabanSiswa[idx];
+      let isCorrect = (jwbUser === s.kunci);
+      if (isCorrect) benar++;
+
+      rincianJawaban.push({
+        no: idx + 1,
+        soal: s.soal,
+        pilihan: s.pilihan,
+        jawabanUser: jwbUser,
+        kunciBenar: s.kunci,
+        isCorrect: isCorrect
+      });
+    });
+    let nilai = Math.round((benar / bankSoal.length) * 100);
+
+    const hasilRef = db.ref('hasil_ujian').push();
+    hasilRef.set({
+      nama: nama,
+      kelas: kelas,
+      nilai: nilai,
+      benar: `${benar} / ${bankSoal.length}`,
+      pelanggaran: `${jumlahPelanggaran} Kali`,
+      waktu: new Date().toLocaleString("id-ID"),
+      rincian: rincianJawaban
+    }, () => {
+      document.getElementById('section-ujian').classList.add('d-none');
+      document.getElementById('headerTimer').classList.add('d-none');
+      document.getElementById('section-hasil').classList.remove('d-none');
+
+      if (globalConfig.tampilHasil) {
+        document.getElementById('detailNilaiContainer').classList.remove('d-none');
+        document.getElementById('detailNilai').innerText = nilai;
+        document.getElementById('detailBenar').innerText = benar;
+        document.getElementById('detailSalah').innerText = bankSoal.length - benar;
+      }
+    });
+  }
+
+  function showModalLogin() { modalLoginObj.show(); }
+
+  function prosesLoginGuru(e) {
+    e.preventDefault();
+    if (document.getElementById('loginPass').value === "admin123") {
+      modalLoginObj.hide();
+      document.getElementById('section-identitas').classList.add('d-none');
+      document.getElementById('btnModeGuru').classList.add('d-none');
+      document.getElementById('btnModeSiswa').classList.remove('d-none');
+      document.getElementById('btnToggleSidebar').classList.remove('d-none');
+      document.getElementById('section-guru').classList.remove('d-none');
+      loadRekapFirebase();
+    } else {
+      Swal.fire({ icon: 'error', title: 'Login Gagal', text: 'Password Salah!' });
+    }
+  }
+
+  function keModeSiswa() { location.reload(); }
+
+  let masterSiswaFirebase = [];
+  function loadRekapFirebase() {
+    db.ref('hasil_ujian').on('value', (snapshot) => {
+      let data = snapshot.val();
+      let html = '';
+      let no = 1;
+      let total = 0, max = 0;
+      masterSiswaFirebase = [];
+
+      if (data) {
+        Object.keys(data).forEach(k => {
+          let item = data[k];
+          item.key = k;
+          masterSiswaFirebase.push(item);
+
+          total += item.nilai;
+          if (item.nilai > max) max = item.nilai;
+
+          html += `<tr>
+            <td>${no++}</td>
+            <td class="fw-bold">${item.nama}</td>
+            <td>${item.kelas}</td>
+            <td>${item.waktu}</td>
+            <td class="text-success fw-bold">${item.benar}</td>
+            <td class="text-danger fw-bold">${bankSoal.length - parseInt(item.benar)}</td>
+            <td><span class="badge bg-warning text-dark">${item.pelanggaran || '0 Kali'}</span></td>
+            <td class="fw-bold text-primary fs-6">${item.nilai}</td>
+            <td class="text-center">
+              <button class="btn btn-outline-danger btn-sm" onclick="hapusSatuNilai('${k}')"><i class="bi bi-trash"></i></button>
+            </td>
+          </tr>`;
+        });
+        document.getElementById('statTotal').innerText = masterSiswaFirebase.length;
+        document.getElementById('statAvg').innerText = Math.round(total / masterSiswaFirebase.length);
+        document.getElementById('statMax').innerText = max;
+      } else {
+        html = '<tr><td colspan="9" class="text-center text-muted">Belum ada data nilai peserta.</td></tr>';
+      }
+      document.getElementById('bodyNilaiGuru').innerHTML = html;
+    });
+  }
+
+  function hapusSatuNilai(key) {
+    if (confirm("Hapus data nilai ini?")) db.ref('hasil_ujian/' + key).remove();
+  }
+
+  function konfirmasiResetNilai() {
+    if (confirm("Reset seluruh data nilai siswa?")) db.ref('hasil_ujian').remove();
+  }
+
+  function simpanSettingUjian(e) {
+    e.preventDefault();
+    let cfg = {
+      durasi: parseInt(document.getElementById('cfgDurasiWaktu').value),
+      tampilHasil: document.getElementById('cfgTampilHasil').checked,
+      acakSoal: document.getElementById('cfgAcakSoal').checked,
+      acakJawaban: document.getElementById('cfgAcakJawaban').checked,
+      batasiSatu: document.getElementById('cfgBatasiSatu').checked,
+      toleransiTab: parseInt(document.getElementById('cfgToleransiTab').value)
+    };
+    db.ref('config_ujian').set(cfg, () => {
+      Swal.fire({ icon: 'success', title: 'Berhasil!', text: 'Aturan Ujian Berhasil Disimpan ke Firebase!', timer: 1800, showConfirmButton: false });
+    });
+  }
+
+  function toggleStatusUjian(switchEl) {
+    let status = switchEl.checked;
+    document.getElementById('lblStatusUjian').innerText = status ? "Status: AKTIF" : "Status: NONAKTIF";
+    db.ref('config_ujian/statusUjian').set(status);
+  }
+
+  function prosesArsipBankSoal() {
+    let namaPaket = prompt("Masukkan Nama Paket Soal yang akan diarsipkan:", "Paket Ujian Bahasa Indonesia Sesi 1");
+    if(!namaPaket) return;
+
+    db.ref('arsip_bank_soal').push({
+      namaPaket: namaPaket,
+      soal: bankSoal,
+      tglDiarsipkan: new Date().toLocaleString("id-ID")
+    }, () => {
+      Swal.fire({ icon: 'success', title: 'Paket Soal Berhasil Diarsipkan!' });
+    });
+  }
+
+  function pulihkanBankSoal(key) {
+    db.ref('arsip_bank_soal/' + key).once('value', (snapshot) => {
+      let data = snapshot.val();
+      if(data && data.soal) {
+        db.ref('bank_soal').set(data.soal, () => {
+          Swal.fire({ icon: 'success', title: 'Paket Soal Dipulihkan!' });
+        });
+      }
+    });
+  }
+
+  function prosesArsipNilai() {
+    let label = prompt("Masukkan Label Arsip Ujian:", "Try Out Bahasa Indonesia Sesi 1");
+    if(!label) return;
+
+    db.ref('hasil_ujian').once('value', (snapshot) => {
+      let data = snapshot.val();
+      if(!data) return alert("Tidak ada data untuk diarsipkan.");
+
+      let tglArsip = new Date().toLocaleString("id-ID");
+      db.ref('arsip_nilai').push({
+        label: label,
+        tglArsip: tglArsip,
+        data: data
+      }, () => {
+        db.ref('hasil_ujian').remove();
+        Swal.fire({ icon: 'success', title: 'Berhasil Diarsipkan!' });
+      });
+    });
+  }
+
+  function loadArsipNilaiFirebase() {
+    db.ref('arsip_nilai').on('value', (snapshot) => {
+      let data = snapshot.val();
+      let html = '';
+      let no = 1;
+      if(data) {
+        Object.keys(data).forEach(k => {
+          let s = data[k];
+          let count = s.data ? Object.keys(s.data).length : 0;
+          html += `<tr>
+            <td>${no++}</td>
+            <td><span class="badge bg-primary px-2 py-1" style="cursor:pointer" onclick="bukaDetailArsipFirebase('${k}')">${s.label}</span></td>
+            <td>${s.tglArsip}</td>
+            <td class="text-center fw-bold">${count} Peserta</td>
+            <td class="text-center">
+              <button class="btn btn-sm btn-primary fw-bold" onclick="bukaDetailArsipFirebase('${k}')"><i class="bi bi-box-arrow-up-right me-1"></i> Buka</button>
+            </td>
+          </tr>`;
+        });
+      } else {
+        html = '<tr><td colspan="5" class="text-center text-muted">Belum ada arsip nilai.</td></tr>';
+      }
+      document.getElementById('bodyDaftarSesiArsip').innerHTML = html;
+    });
+  }
+
+  function bukaDetailArsipFirebase(key) {
+    db.ref('arsip_nilai/' + key).once('value', (snapshot) => {
+      let s = snapshot.val();
+      if(!s || !s.data) return;
+
+      document.getElementById('titleSesiArsipAktif').innerText = s.label + " (" + s.tglArsip + ")";
+      let html = '';
+      let no = 1;
+      Object.keys(s.data).forEach(k => {
+        let item = s.data[k];
+        html += `<tr>
+          <td>${no++}</td>
+          <td><span class="badge bg-primary">${s.label}</span></td>
+          <td class="fw-bold">${item.nama}</td>
+          <td>${item.kelas}</td>
+          <td class="fw-bold text-success fs-6">${item.nilai}</td>
+          <td>${item.benar}</td>
+          <td>${item.waktu}</td>
+          <td><span class="badge bg-warning text-dark">${item.pelanggaran || '0 Kali'}</span></td>
+          <td class="small text-muted">${s.tglArsip}</td>
+        </tr>`;
+      });
+      document.getElementById('bodyArsipNilai').innerHTML = html;
+      document.getElementById('viewDaftarSesiArsip').classList.add('d-none');
+      document.getElementById('viewDetailSesiArsip').classList.remove('d-none');
+    });
+  }
+
+  function kembaliKeDaftarSesiArsip() {
+    document.getElementById('viewDetailSesiArsip').classList.add('d-none');
+    document.getElementById('viewDaftarSesiArsip').classList.remove('d-none');
+  }
+
+  function renderBankSoalGuru() {
+    const container = document.getElementById('listSoalGuruContainer');
+    if (!bankSoal || bankSoal.length === 0) {
+      container.innerHTML = `<div class="alert alert-warning card card-cbt">Belum ada soal di Firebase. Silakan Import Soal dari Word.</div>`;
+      return;
+    }
+    let html = '';
+    bankSoal.forEach((item, idx) => {
+      let optionsHtml = '';
+      item.pilihan.forEach((p, pIdx) => {
+        let isBenar = pIdx === item.kunci;
+        optionsHtml += `<div class="small mb-1 ${isBenar ? 'text-success fw-bold' : 'text-muted'}">
+          ${String.fromCharCode(65 + pIdx)}. ${p} ${isBenar ? '<span class="badge bg-success ms-1">Kunci</span>' : ''}
+        </div>`;
+      });
+
+      html += `<div class="soal-item-card shadow-sm mb-3">
+        <h6 class="fw-bold" style="color:var(--primary-color)">Soal No. ${idx + 1}</h6>
+        <p class="fw-medium mb-2 small">${item.soal}</p>
+        ${item.imageBase64 ? `<div class="mb-2"><img src="${item.imageBase64}" class="img-fluid rounded border" style="max-height:160px"></div>` : ''}
+        <div class="bg-light p-3 rounded">${optionsHtml}</div>
+      </div>`;
+    });
+    container.innerHTML = html;
+  }
+
+  function renderMenuAnalisisSoal() {
+    if (masterSiswaFirebase.length === 0) return;
+    let maxSoal = bankSoal.length;
+
+    let headHtml = `<th>NO</th><th>NAMA PESERTA</th><th>KELAS</th><th>SKOR</th>`;
+    for (let i = 1; i <= maxSoal; i++) headHtml += `<th>S${i}</th>`;
+    document.getElementById('headerMatriksAnalisis').innerHTML = headHtml;
+
+    let statMap = {};
+    for (let i = 1; i <= maxSoal; i++) statMap[i] = { benar: 0, salah: 0 };
+
+    let bodyHtml = '';
+    masterSiswaFirebase.forEach((s, idx) => {
+      bodyHtml += `<tr><td>${idx + 1}</td><td class="fw-bold">${s.nama}</td><td>${s.kelas}</td><td class="fw-bold text-primary">${s.nilai}</td>`;
+      let rincian = s.rincian || [];
+      for (let i = 1; i <= maxSoal; i++) {
+        let itemS = rincian.find(r => r.no === i);
+        if (itemS) {
+          if (itemS.isCorrect) {
+            statMap[i].benar++;
+            bodyHtml += `<td class="table-success text-success fw-bold">✓</td>`;
+          } else {
+            statMap[i].salah++;
+            bodyHtml += `<td class="table-danger text-danger fw-bold">✗</td>`;
+          }
+        } else {
+          bodyHtml += `<td>-</td>`;
+        }
+      }
+      bodyHtml += `</tr>`;
+    });
+    document.getElementById('bodyMatriksAnalisis').innerHTML = bodyHtml;
+
+    let statHtml = '';
+    for (let i = 1; i <= maxSoal; i++) {
+      let tot = statMap[i].benar + statMap[i].salah;
+      let pct = tot > 0 ? Math.round((statMap[i].benar / tot) * 100) : 0;
+      statHtml += `<tr>
+        <td class="fw-bold text-center">Soal ${i}</td>
+        <td class="text-center text-success fw-bold">${statMap[i].benar} Siswa</td>
+        <td class="text-center text-danger fw-bold">${statMap[i].salah} Siswa</td>
+        <td class="text-center"><div class="progress"><div class="progress-bar bg-success" style="width:${pct}%">${pct}%</div></div></td>
+        <td class="text-center"><span class="badge bg-info text-dark">${pct >= 60 ? 'Mudah' : 'Sedang/Sukar'}</span></td>
+      </tr>`;
+    }
+    document.getElementById('bodyStatSoalAnalisis').innerHTML = statHtml;
+  }
+
+  function bukaModalImportWord() { modalImportWordObj.show(); }
+
+  function prosesFileWord(input) {
+    let file = input.files[0];
+    if (!file) return;
+
+    Swal.fire({ title: 'Membaca Word & Gambar...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
+
+    let reader = new FileReader();
+    reader.onload = function(evt) {
+      let arrayBuffer = evt.target.result;
+
+      mammoth.convertToHtml({
+        arrayBuffer: arrayBuffer,
+        convertImage: mammoth.images.imgElement(function(image) {
+          return image.read("base64").then(function(imageBuffer) {
+            return { src: "data:" + image.contentType + ";base64," + imageBuffer };
+          });
+        })
+      })
+      .then(function(res) {
+        let htmlStr = res.value;
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(htmlStr, 'text/html');
+
+        let elements = Array.from(doc.body.childNodes);
+        let list = [];
+        let current = null;
+
+        elements.forEach(el => {
+          let text = el.textContent ? el.textContent.trim() : '';
+          let imgEl = el.querySelector ? el.querySelector('img') : null;
+          let imgSrc = imgEl ? imgEl.src : null;
+
+          if (!text && !imgSrc) return;
+
+          let isSoal = text.match(/^(\d+)[\.\)]\s*(.+)/);
+          let isOpsi = text.match(/^([A-Ea-e])[\.\)]\s*(.+)/);
+          let isKunci = text.match(/^(kunci|jawaban)\s*:\s*([A-Ea-e])/i);
+
+          if (isSoal) {
+            if (current && current.pilihan.length > 0) list.push(current);
+            current = { soal: isSoal[2], imageBase64: imgSrc || null, pilihan: [], kunci: 0 };
+          } else if (isKunci && current) {
+            current.kunci = isKunci[2].toUpperCase().charCodeAt(0) - 65;
+          } else if (isOpsi && current) {
+            current.pilihan.push(isOpsi[2]);
+          } else if (current) {
+            if (imgSrc && !current.imageBase64) current.imageBase64 = imgSrc;
+          }
+        });
+        if (current && current.pilihan.length > 0) list.push(current);
+
+        parsedWordSoal = list;
+        Swal.close();
+
+        let prevHtml = '';
+        list.forEach((item, idx) => {
+          let pilStr = item.pilihan.map((p, pIdx) => `${String.fromCharCode(65 + pIdx)}. ${p}`).join('<br>');
+          let imgPrev = item.imageBase64 ? `<img src="${item.imageBase64}" style="max-height:50px">` : '-';
+          prevHtml += `<tr>
+            <td>${idx + 1}</td>
+            <td>${item.soal}</td>
+            <td>${imgPrev}</td>
+            <td>${pilStr}</td>
+            <td class="fw-bold text-success">${String.fromCharCode(65 + item.kunci)}</td>
+          </tr>`;
+        });
+        document.getElementById('bodyPreviewWord').innerHTML = prevHtml;
+        document.getElementById('countWord').innerText = list.length;
+        document.getElementById('previewWordBox').classList.remove('d-none');
+        document.getElementById('btnUploadWord').classList.remove('d-none');
+      });
+    };
+    reader.readAsArrayBuffer(file);
+  }
+
+  function simpanSoalWordToFirebase() {
+    if (parsedWordSoal.length === 0) return;
+    db.ref('bank_soal').set(parsedWordSoal, (err) => {
+      if (!err) {
+        Swal.fire({ icon: 'success', title: 'Soal Word Berhasil Diunggah ke Firebase!' });
+        modalImportWordObj.hide();
+      }
+    });
+  }
+
+  function exportTableToCSV(tableId, filename) {
+    let table = document.getElementById(tableId);
+    let rows = table.querySelectorAll("tr");
+    let csv = [];
+    for (let i = 0; i < rows.length; i++) {
+      let row = [], cols = rows[i].querySelectorAll("td, th");
+      for (let j = 0; j < cols.length; j++) row.push('"' + cols[j].innerText.replace(/"/g, '""') + '"');
+      csv.push(row.join(","));
+    }
+    let csvFile = new Blob([csv.join("\n")], {type: "text/csv"});
+    let downloadLink = document.createElement("a");
+    downloadLink.download = filename;
+    downloadLink.href = window.URL.createObjectURL(csvFile);
+    downloadLink.style.display = "none";
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+  }
+</script>
+
+</body>
+</html>

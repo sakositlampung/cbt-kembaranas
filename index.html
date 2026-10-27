@@ -839,7 +839,7 @@
 
   let globalConfig = { durasi: 60, acakSoal: true, acakJawaban: false, tampilHasil: true, batasiSatu: false, toleransiTab: 3, themeColor: "#4338ca" };
 
-  // AUDIO ENGINE SUARA SIRENE KECURANGAN NYARING (WEB AUDIO API)
+  // AUDIO ENGINE SIRENE KECURANGAN NYARING
   let audioCtx = null;
   let alarmInterval = null;
 
@@ -859,8 +859,8 @@
         let osc = audioCtx.createOscillator();
         let gain = audioCtx.createGain();
         osc.type = 'sawtooth';
-        osc.frequency.value = toggleFreq ? 880 : 440; // Suara sirine bernada tinggi
-        gain.gain.value = 1.0; // Volume Maksimal Loud
+        osc.frequency.value = toggleFreq ? 880 : 440;
+        gain.gain.value = 1.0;
 
         osc.connect(gain);
         gain.connect(audioCtx.destination);
@@ -933,7 +933,7 @@
       document.getElementById('bodyArsipPaketSoal').innerHTML = html;
     });
 
-    // SISTEM ANTI KECURANGAN STRICT & DETEKSI EVENT
+    // SISTEM ANTI KECURANGAN STRICT
     window.addEventListener("blur", function() {
       if (isUjianAktif) trigPeringatan();
     });
@@ -1005,12 +1005,19 @@
     document.getElementById('cheatOverlay').classList.remove('d-none');
     document.getElementById('lblSisaKesempatan').innerText = Math.max(0, sisa);
 
-    // BUNYIKAN ALARM SUARA KERAS
     mainkanSuaraCurangKeras();
 
     if(sisa <= 0) {
-      alert("Toleransi kecurangan telah habis! Jawaban Anda akan langsung dikirim otomatis.");
-      kirimJawaban();
+      Swal.fire({
+        icon: 'error',
+        title: 'Toleransi Ujian Habis!',
+        text: 'Anda terdeteksi melakukan kecurangan berulang kali. Jawaban Anda dikirim otomatis.',
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#dc2626',
+        allowOutsideClick: false
+      }).then(() => {
+        kirimJawaban();
+      });
     }
   }
 
@@ -1132,7 +1139,20 @@
   }
 
   function konfirmasiSelesai() {
-    if (confirm("Kirim hasil jawaban Anda sekarang?")) kirimJawaban();
+    Swal.fire({
+      title: 'Kirim Hasil Ujian?',
+      text: 'Pastikan Anda telah memeriksa kembali seluruh lembar jawaban sebelum dikirim.',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#16a34a',
+      cancelButtonColor: '#6b7280',
+      confirmButtonText: 'Ya, Selesai & Kirim',
+      cancelButtonText: 'Batal'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        kirimJawaban();
+      }
+    });
   }
 
   function kirimJawaban() {
@@ -1258,19 +1278,39 @@
   }
 
   function hapusSatuNilai(key) {
-    if (confirm("Hapus data nilai ini?")) {
-      db.ref('hasil_ujian/' + key).remove(() => {
-        Swal.fire({ icon: 'success', title: 'Terhapus!', text: 'Data nilai berhasil dihapus.', timer: 1500, showConfirmButton: false });
-      });
-    }
+    Swal.fire({
+      title: 'Hapus Data Nilai?',
+      text: 'Data nilai peserta yang dipilih akan dihapus permanen.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#dc2626',
+      cancelButtonColor: '#6b7280',
+      confirmButtonText: 'Ya, Hapus'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        db.ref('hasil_ujian/' + key).remove(() => {
+          Swal.fire({ icon: 'success', title: 'Terhapus!', text: 'Data nilai berhasil dihapus.', timer: 1500, showConfirmButton: false });
+        });
+      }
+    });
   }
 
   function konfirmasiResetNilai() {
-    if (confirm("Reset seluruh data nilai siswa?")) {
-      db.ref('hasil_ujian').remove(() => {
-        Swal.fire({ icon: 'success', title: 'Berhasil Reset!', text: 'Seluruh nilai peserta telah dibersihkan.', timer: 1800, showConfirmButton: false });
-      });
-    }
+    Swal.fire({
+      title: 'Reset Seluruh Data Nilai?',
+      text: 'Seluruh nilai peserta didik aktif di Firebase akan dibersihkan.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#dc2626',
+      cancelButtonColor: '#6b7280',
+      confirmButtonText: 'Ya, Reset Semua'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        db.ref('hasil_ujian').remove(() => {
+          Swal.fire({ icon: 'success', title: 'Berhasil Reset!', text: 'Seluruh nilai peserta telah dibersihkan.', timer: 1800, showConfirmButton: false });
+        });
+      }
+    });
   }
 
   function simpanSettingUjian(e) {
@@ -1302,15 +1342,24 @@
   }
 
   function prosesArsipBankSoal() {
-    let namaPaket = prompt("Masukkan Nama Paket Soal yang akan diarsipkan:", "Paket Ujian Bahasa Indonesia Sesi 1");
-    if(!namaPaket) return;
-
-    db.ref('arsip_bank_soal').push({
-      namaPaket: namaPaket,
-      soal: bankSoal,
-      tglDiarsipkan: new Date().toLocaleString("id-ID")
-    }, () => {
-      Swal.fire({ icon: 'success', title: 'Pengarsipan Sukses!', text: 'Paket soal telah aman disimpan ke arsip.' });
+    Swal.fire({
+      title: 'Arsipkan Paket Soal',
+      input: 'text',
+      inputLabel: 'Masukkan Nama Paket Soal:',
+      inputValue: 'Paket Ujian Bahasa Indonesia Sesi 1',
+      showCancelButton: true,
+      confirmButtonText: 'Simpan Arsip',
+      cancelButtonText: 'Batal'
+    }).then((res) => {
+      if (res.isConfirmed && res.value) {
+        db.ref('arsip_bank_soal').push({
+          namaPaket: res.value,
+          soal: bankSoal,
+          tglDiarsipkan: new Date().toLocaleString("id-ID")
+        }, () => {
+          Swal.fire({ icon: 'success', title: 'Pengarsipan Sukses!', text: 'Paket soal telah aman disimpan ke arsip.' });
+        });
+      }
     });
   }
 
@@ -1326,22 +1375,31 @@
   }
 
   function prosesArsipNilai() {
-    let label = prompt("Masukkan Label Arsip Ujian:", "Try Out Bahasa Indonesia Sesi 1");
-    if(!label) return;
+    Swal.fire({
+      title: 'Arsipkan Hasil Ujian',
+      input: 'text',
+      inputLabel: 'Masukkan Label Arsip Ujian:',
+      inputValue: 'Try Out Bahasa Indonesia Sesi 1',
+      showCancelButton: true,
+      confirmButtonText: 'Simpan Arsip',
+      cancelButtonText: 'Batal'
+    }).then((res) => {
+      if (res.isConfirmed && res.value) {
+        db.ref('hasil_ujian').once('value', (snapshot) => {
+          let data = snapshot.val();
+          if(!data) return Swal.fire({ icon: 'info', title: 'Tidak Ada Data', text: 'Belum ada data nilai peserta untuk diarsipkan.' });
 
-    db.ref('hasil_ujian').once('value', (snapshot) => {
-      let data = snapshot.val();
-      if(!data) return alert("Tidak ada data untuk diarsipkan.");
-
-      let tglArsip = new Date().toLocaleString("id-ID");
-      db.ref('arsip_nilai').push({
-        label: label,
-        tglArsip: tglArsip,
-        data: data
-      }, () => {
-        db.ref('hasil_ujian').remove();
-        Swal.fire({ icon: 'success', title: 'Hasil Ujian Diarsipkan!', text: 'Data nilai telah dipindahkan ke menu Arsip Nilai Ujian.' });
-      });
+          let tglArsip = new Date().toLocaleString("id-ID");
+          db.ref('arsip_nilai').push({
+            label: res.value,
+            tglArsip: tglArsip,
+            data: data
+          }, () => {
+            db.ref('hasil_ujian').remove();
+            Swal.fire({ icon: 'success', title: 'Hasil Ujian Diarsipkan!', text: 'Data nilai telah dipindahkan ke menu Arsip Nilai Ujian.' });
+          });
+        });
+      }
     });
   }
 
@@ -1466,8 +1524,12 @@
 
   function previewSoalGuru(idx) {
     let item = bankSoal[idx];
-    let pilStr = item.pilihan.map((p, i) => `${String.fromCharCode(65+i)}. ${p}`).join('\n');
-    alert(`PREVIEW SOAL NO ${idx + 1}:\n\n${item.soal}\n\n${pilStr}\n\nKUNCI: ${String.fromCharCode(65 + item.kunci)}`);
+    let pilStr = item.pilihan.map((p, i) => `<div class="text-start mb-1"><b>${String.fromCharCode(65+i)}.</b> ${p}</div>`).join('');
+    Swal.fire({
+      title: `Preview Soal No. ${idx + 1}`,
+      html: `<div class="text-start mb-3">${item.soal}</div><div class="bg-light p-3 rounded">${pilStr}</div><div class="mt-3 text-start text-success fw-bold">KUNCI: ${String.fromCharCode(65 + item.kunci)}</div>`,
+      confirmButtonText: 'Tutup'
+    });
   }
 
   function bukaModalEditSoal(idx) {
@@ -1589,12 +1651,22 @@
   }
 
   function hapusSoalGuru(idx) {
-    if(confirm(`Yakin ingin menghapus Soal No. ${idx + 1}?`)) {
-      bankSoal.splice(idx, 1);
-      db.ref('bank_soal').set(bankSoal, () => {
-        Swal.fire({ icon: 'success', title: 'Berhasil Dihapus!', text: 'Soal telah dihapus dari bank soal.', timer: 1800, showConfirmButton: false });
-      });
-    }
+    Swal.fire({
+      title: `Hapus Soal No. ${idx + 1}?`,
+      text: 'Soal akan dihapus secara permanen dari bank soal.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#dc2626',
+      cancelButtonColor: '#6b7280',
+      confirmButtonText: 'Ya, Hapus'
+    }).then((res) => {
+      if (res.isConfirmed) {
+        bankSoal.splice(idx, 1);
+        db.ref('bank_soal').set(bankSoal, () => {
+          Swal.fire({ icon: 'success', title: 'Berhasil Dihapus!', text: 'Soal telah dihapus dari bank soal.', timer: 1800, showConfirmButton: false });
+        });
+      }
+    });
   }
 
   function renderMenuAnalisisSoal() {
